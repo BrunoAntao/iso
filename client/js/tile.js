@@ -57,7 +57,9 @@ class Grid extends Tile {
 
         super(x, y, z, frame, group);
 
-        this.anchor.setTo(0.5, 0.5);
+        this.anchor.setTo(0.5, 0.25);
+
+        this.loadTexture('cube');
 
         this.isoX = x;
         this.isoY = y;
@@ -82,7 +84,7 @@ class Cube extends Tile {
         this.isoY = y;
         this.isoZ = z;
 
-        this.frame = frame - 1;
+        this.frame = frame;
         this.group = group;
     }
 

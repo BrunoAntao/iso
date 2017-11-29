@@ -319,11 +319,11 @@ class Map extends Phaser.Group {
 
             if (this.data.points[tile.isoX][tile.isoY][tile.isoZ]) {
 
-                tile.frame = 1;
+                tile.frame = 2;
 
             } else {
 
-                tile.frame = 0;
+                tile.frame = 1;
 
             }
 

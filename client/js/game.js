@@ -2,7 +2,7 @@ gameState = {
 
     preload: function () {
 
-        game.load.spritesheet('tile', 'client/assets/tiles.png', 64, 32);
+        game.load.spritesheet('tile', 'client/assets/tiles.png', 64, 64);
         game.load.spritesheet('cube', 'client/assets/cubes.png', 64, 64);
         
     },
@@ -17,6 +17,18 @@ gameState = {
         game.world.setBounds(0, 0, 1000, 1000);
 
         global.map = new Map(10, 10, 10);
+
+        let size = game.cache._cache.image.tile.base.width / game.cache._cache.image.tile.frameWidth;
+
+        let list = [];
+
+        for(let i = 0; i < size; i++) {
+
+            list[i] = i;
+
+        }
+
+        new Slider(list);
 
     },
 
