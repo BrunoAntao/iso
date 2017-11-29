@@ -4,7 +4,7 @@ gameState = {
 
         game.load.spritesheet('tile', 'client/assets/tiles.png', 64, 64);
         game.load.spritesheet('cube', 'client/assets/cubes.png', 64, 64);
-        
+
     },
 
     create: function () {
@@ -14,7 +14,8 @@ gameState = {
         game.stage.disableVisibilityChange = true;
         game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
 
-        game.world.setBounds(0, 0, 1000, 1000);
+        global.active = 1;
+        global.point = {x:0, y:0};
 
         global.map = new Map(10, 10, 10);
 
@@ -22,7 +23,7 @@ gameState = {
 
         let list = [];
 
-        for(let i = 0; i < size; i++) {
+        for (let i = 0; i < size; i++) {
 
             list[i] = i;
 
@@ -38,8 +39,22 @@ gameState = {
 
             if (game.origDragPoint) {
 
-                game.camera.x += game.origDragPoint.x - game.input.activePointer.position.x;
-                game.camera.y += game.origDragPoint.y - game.input.activePointer.position.y;
+                global.point.x -= game.origDragPoint.x - game.input.activePointer.position.x;
+                global.point.y -= game.origDragPoint.y - game.input.activePointer.position.y;
+
+                global.map.grid.forEach(function (tile) {
+
+                    tile.x -= game.origDragPoint.x - game.input.activePointer.position.x;
+                    tile.y -= game.origDragPoint.y - game.input.activePointer.position.y;
+
+                });
+
+                global.map.tiles.forEach(function (tile) {
+
+                    tile.x -= game.origDragPoint.x - game.input.activePointer.position.x;
+                    tile.y -= game.origDragPoint.y - game.input.activePointer.position.y;
+
+                });
 
             }
 

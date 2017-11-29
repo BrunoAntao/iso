@@ -2,7 +2,7 @@ class Tile extends Phaser.Sprite {
 
     constructor(x, y, z, frame, group) {
 
-        super(game, 1000 / 4 + x * 32 + y * 32, 1000 / 4 - y * 16 + x * 16 - z * 32, 'tile');
+        super(game, 1000 / 4 + x * 32 + y * 32 + global.point.x, 1000 / 4 - y * 16 + x * 16 - z * 32 + global.point.y, 'tile');
 
         this.anchor.setTo(0.5, 0.5);
 
@@ -34,8 +34,8 @@ class Tile extends Phaser.Sprite {
 
             if (game.input.activePointer.leftButton.isDown && !tile.group.parent.data.points[tile.isoX][tile.isoY][tile.isoZ] && tile.isoZ < group.parent.data.height) {
 
-                new Cube(tile.isoX, tile.isoY, tile.isoZ + 1, 1, group.parent.children[1]);
-                tile.group.parent.data.points[tile.isoX][tile.isoY][tile.isoZ] = 1;
+                let cube = new Cube(tile.isoX, tile.isoY, tile.isoZ + 1, global.active, group.parent.children[1]);
+                tile.group.parent.data.points[tile.isoX][tile.isoY][tile.isoZ] = global.active;
 
             } else if (game.input.activePointer.rightButton.isDown && tile.group.name != 'grid') {
 
@@ -75,8 +75,6 @@ class Cube extends Tile {
     constructor(x, y, z, frame, group) {
 
         super(x, y, z, frame, group);
-
-        this.loadTexture('cube');
 
         this.anchor.setTo(0.5, 0.25);
 

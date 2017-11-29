@@ -3,19 +3,20 @@ class Slider extends Phaser.Graphics {
     constructor(items) {
 
         super(game, 0, 0);
-        
+
         this.beginFill(0x000000);
         this.lineStyle(2, 0xffffff, 1);
-        this.drawRect(game.width*3/4, 0, game.width/4, game.height);
+        this.drawRect(game.width * 3 / 4, 0, game.width / 4, game.height);
         this.endFill();
 
         this.fixedToCamera = true;
+        this.items = game.add.group();
 
-        items.forEach(function(item) {
+        items.forEach(function (item) {
 
-            new Item(item);
+            this.items.add(new Item(item));
 
-        })
+        }, this)
 
         game.add.existing(this);
     }
@@ -25,13 +26,39 @@ class Slider extends Phaser.Graphics {
         this.clear();
         this.beginFill(0x000000);
         this.lineStyle(2, 0xffffff, 1);
-        this.drawRect(game.width*3/4, 0, game.width/4, game.height);
+        this.drawRect(game.width * 3 / 4, 0, game.width / 4, game.height);
         this.endFill();
+
+        game.world.bringToTop(this.items);
+
+        let items = this.items;
+
+        game.input.mouse.mouseWheelCallback = function (e) {
+
+            if (e.deltaY < 0 && items.children[0].y > -(items.length - 1) * 32) {
+
+                items.forEach(function (item) {
+
+                    item.y -= 50;
+
+                })
+
+            } else if(e.deltaY > 0 && items.children[0].y < 64) {
+
+                items.forEach(function (item) {
+
+                    item.y += 50;
+
+                })
+
+            }
+
+        }
 
     }
 
 }
-class Item extends Phaser.Sprite{
+class Item extends Phaser.Sprite {
 
     constructor(id) {
 
@@ -39,18 +66,23 @@ class Item extends Phaser.Sprite{
 
         this.anchor.setTo(0.5, 0.5);
 
-        this.x = game.width*3/4 + game.width/8;
+        this.x = game.width * 3 / 4 + game.width / 8;
         this.y = 64 + id * 64;
         this.frame = id;
+
+        this.inputEnabled = true;
+        this.events.onInputDown.add(function (item) {
+
+            global.active = item.frame;
+
+        }, this)
 
         game.add.existing(this);
     }
 
     update() {
 
-        game.world.bringToTop(this);
-
-        this.x = game.width*3/4 + game.width/8;
+        this.x = game.width * 3 / 4 + game.width / 8;
 
     }
 

@@ -315,20 +315,6 @@ class Map extends Phaser.Group {
 
         });
 
-        this.tiles.forEach(function (tile) {
-
-            if (this.data.points[tile.isoX][tile.isoY][tile.isoZ]) {
-
-                tile.frame = 2;
-
-            } else {
-
-                tile.frame = 1;
-
-            }
-
-        }, this)
-
     }
 
 }
