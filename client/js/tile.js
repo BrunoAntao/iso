@@ -2,7 +2,7 @@ class Tile extends Phaser.Sprite {
 
     constructor(x, y, z, frame, group) {
 
-        super(game, 1000 / 4 + x * 32 + y * 32 + global.point.x, 1000 / 4 - y * 16 + x * 16 - z * 32 + global.point.y, 'tile');
+        super(game, 400 / 4 + x * 32 + y * 32 + global.point.x, 1400 / 4 - y * 16 + x * 16 - z * 32 + global.point.y, 'tile');
 
         this.anchor.setTo(0.5, 0.5);
 
@@ -48,6 +48,13 @@ class Tile extends Phaser.Sprite {
 
         game.add.existing(this);
         this.group.add(this);
+    }
+
+    update() {
+
+        this.x = 400 / 4 + this.isoX * 32 + this.isoY * 32 + global.point.x; 
+        this.y = 1400 / 4 - this.isoY * 16 + this.isoX * 16 - this.isoZ * 32 + global.point.y;
+
     }
 
 }

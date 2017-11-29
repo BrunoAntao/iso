@@ -309,6 +309,9 @@ class Map extends Phaser.Group {
 
     update() {
 
+        this.grid.update();
+        this.tiles.update();
+
         this.tiles.customSort(function (a, b) {
 
             return b.isoY - a.isoY + a.isoX - b.isoX + a.isoZ - b.isoZ;
