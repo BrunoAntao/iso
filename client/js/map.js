@@ -48,6 +48,7 @@ class Map extends Phaser.Group {
         }
 
         this.over = null;
+        this.open = false;
 
         this.hiddingX = false;
         this.hiddingY = false;
@@ -55,13 +56,13 @@ class Map extends Phaser.Group {
 
         let m = this;
 
-        game.input.keyboard.onDownCallback = function (e) {
+        this.inputs = function (e) {
 
             switch (e.key) {
 
                 case 'r': m.clear(); break;
-                case 's': m.save(); break;
-                case 'l': m.load(); break;
+                case 's': if (!this.open) { m.save(); } break;
+                case 'l': if (!this.open) { m.load(); } break;
 
             }
 
@@ -78,6 +79,27 @@ class Map extends Phaser.Group {
 
         }
 
+        game.input.keyboard.onDownCallback = this.inputs;
+
+        socket.on('maplist', function (maplist) {
+
+            let panel = new Panel(128, 64)
+            panel.add(new SelectList(panel.w, panel.h, maplist,
+
+                function (elem) {
+
+                    socket.emit('fetch map', elem.text.options[elem.text.selectedIndex].value);
+                    m.open = false;
+                    game.input.keyboard.onDownCallback = m.inputs;
+
+                },
+
+                'Enter'
+
+            ));
+
+        })
+
         socket.on('map', function (map) {
 
             m.clear();
@@ -91,6 +113,7 @@ class Map extends Phaser.Group {
                         if (map.points[x][y][z]) {
 
                             new Cube(x, y, z + 1, map.points[x][y][z], m.tiles);
+                            m.data.points[x][y][z] = map.points[x][y][z];
 
                         }
 
@@ -255,13 +278,32 @@ class Map extends Phaser.Group {
 
     save() {
 
-        socket.emit('save map', this.data);
+        this.open = true;
+
+        let m = this;
+
+        let panel = new Panel(128, 64);
+        panel.add(new TextBox(panel.w, panel.h,
+
+            function (elem) {
+
+                socket.emit('save map', { map: m.data, name: elem.text.value });
+                m.open = false;
+                game.input.keyboard.onDownCallback = m.inputs;
+
+            },
+
+            'Enter'
+
+        ));
 
     }
 
     load() {
 
-        socket.emit('fetch map', this.data);
+        this.open = true;
+
+        socket.emit('fetch maplist', this.data);
 
     }
 
@@ -275,7 +317,7 @@ class Map extends Phaser.Group {
 
         this.tiles.forEach(function (tile) {
 
-            if(this.data.points[tile.isoX][tile.isoY][tile.isoZ]) {
+            if (this.data.points[tile.isoX][tile.isoY][tile.isoZ]) {
 
                 tile.frame = 1;
 

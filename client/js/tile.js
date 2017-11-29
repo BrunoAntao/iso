@@ -2,7 +2,7 @@ class Tile extends Phaser.Sprite {
 
     constructor(x, y, z, frame, group) {
 
-        super(game, 1000 / 4 + x * 32 + y * 32, 1000 / 2 - y * 16 + x * 16 - z * 32, 'tile');
+        super(game, 1000 / 4 + x * 32 + y * 32, 1000 / 4 - y * 16 + x * 16 - z * 32, 'tile');
 
         this.anchor.setTo(0.5, 0.5);
 

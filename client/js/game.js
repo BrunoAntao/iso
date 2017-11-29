@@ -4,7 +4,7 @@ gameState = {
 
         game.load.spritesheet('tile', 'client/assets/tiles.png', 64, 32);
         game.load.spritesheet('cube', 'client/assets/cubes.png', 64, 64);
-
+        
     },
 
     create: function () {
@@ -23,6 +23,7 @@ gameState = {
     update: function () {
 
         if (game.input.activePointer.isDown) {
+
             if (game.origDragPoint) {
 
                 game.camera.x += game.origDragPoint.x - game.input.activePointer.position.x;
