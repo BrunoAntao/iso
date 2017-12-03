@@ -71,6 +71,14 @@ class SelectList {
 
         game.input.keyboard.onDownCallback = function (e) {
 
+            if (e.key === 'Escape') {
+
+                elem.text.parentNode.removeChild(elem.text);
+                elem.parent.destroy();
+                game.input.keyboard.onDownCallback = global.map.inputs;
+
+            }
+
             if (e.key === key) {
 
                 event(elem);
@@ -111,6 +119,14 @@ class TextBox {
         let elem = this;
 
         game.input.keyboard.onDownCallback = function (e) {
+
+            if (e.key === 'Escape') {
+
+                elem.text.parentNode.removeChild(elem.text);
+                elem.parent.destroy();
+                game.input.keyboard.onDownCallback = global.map.inputs;
+
+            }
 
             if (e.key === key) {
 
