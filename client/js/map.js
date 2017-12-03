@@ -112,8 +112,8 @@ class Map extends Phaser.Group {
 
                         if (map.points[x][y][z]) {
 
-                            new Cube(x, y, z + 1, map.points[x][y][z], m.tiles);
-                            m.data.points[x][y][z] = map.points[x][y][z];
+                            new Cube(x, y, z + 1, map.points[x][y][z] - 1, m.tiles);
+                            m.data.points[x][y][z] = map.points[x][y][z] - 1;
 
                         }
 
