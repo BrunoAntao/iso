@@ -73,6 +73,7 @@ class Map extends Phaser.Group {
 
                     case 'q': m.hideX(m.over.isoX); break;
                     case 'e': m.hideY(m.over.isoY); break;
+                    case 'p': global.map.add_player(new Player(m.over.isoX, m.over.isoY, m.over.isoZ + 1)); break;
 
                 }
 
