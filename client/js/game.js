@@ -31,6 +31,8 @@ gameState = {
 
         new Slider(list);
 
+        global.map.add_player(new Player(0, 0, 0));
+
     },
 
     update: function () {

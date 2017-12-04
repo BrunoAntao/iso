@@ -10,7 +10,7 @@ class Map extends Phaser.Group {
 
             for (let y = 0; y < length; y++) {
 
-                tiles.push({ x: x, y: y, z: 0, frame: 0 });
+                tiles.push({ x: x, y: y, z: -1 });
 
             }
 
@@ -18,10 +18,11 @@ class Map extends Phaser.Group {
 
         this.grid = game.add.group(this, 'grid');
         this.tiles = game.add.group(this, 'tiles');
+        this.players = [];
 
         tiles.forEach(function (tile) {
 
-            new Grid(tile.x, tile.y, tile.z, tile.frame, this.grid);
+            new Grid(tile.x, tile.y, tile.z, this.grid);
 
         }, this)
 
@@ -112,7 +113,7 @@ class Map extends Phaser.Group {
 
                         if (map.points[x][y][z]) {
 
-                            new Cube(x, y, z + 1, map.points[x][y][z] - 1, m.tiles);
+                            new Cube(x, y, z, map.points[x][y][z] - 1, m.tiles);
                             m.data.points[x][y][z] = map.points[x][y][z] - 1;
 
                         }
@@ -126,6 +127,30 @@ class Map extends Phaser.Group {
         })
 
         game.add.existing(this);
+
+    }
+
+    add_player(player) {
+
+        this.tiles.add(player);
+        this.players.push(player);
+        this.data.points[player.isoX][player.isoY][player.isoZ] = 'p';
+
+    }
+
+    remove_player(player) {
+
+        this.tiles.remove(player);
+        this.players.forEach(function (e) {
+
+            if (e === player) {
+
+                e = null;
+
+            }
+
+        })
+        this.data.points[player.isoX][player.isoY][player.isoZ] = null;
 
     }
 
@@ -309,14 +334,17 @@ class Map extends Phaser.Group {
 
     update() {
 
-        this.grid.update();
-        this.tiles.update();
+        this.forEach(function (group) {
 
-        this.tiles.customSort(function (a, b) {
+            group.update();
 
-            return b.isoY - a.isoY + a.isoX - b.isoX + a.isoZ - b.isoZ;
+            group.customSort(function (a, b) {
 
-        });
+                return b.isoY - a.isoY + a.isoX - b.isoX + a.isoZ - b.isoZ;
+
+            });
+
+        })
 
     }
 
