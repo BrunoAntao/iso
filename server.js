@@ -5,7 +5,7 @@ var io = require('socket.io')(http);
 let fs = require('fs');
 let port = 80;
 
-app.set('view engine', 'ejs');
+//app.set('view engine', 'ejs');
 app.use('/client', express.static('client'));
 
 require('./server/routes.js')(app);

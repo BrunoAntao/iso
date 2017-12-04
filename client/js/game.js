@@ -15,21 +15,40 @@ gameState = {
         game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
 
         global.active = 1;
-        global.point = {x:0, y:0};
+        global.point = { x: 0, y: 0 };
 
-        global.map = new Map(10, 10, 10);
+        // global.map = new Map(10, 10, 10);
 
-        let size = game.cache._cache.image.tile.base.width / game.cache._cache.image.tile.frameWidth;
+        // let size = game.cache._cache.image.tile.base.width / game.cache._cache.image.tile.frameWidth;
 
-        let list = [];
+        // let list = [];
 
-        for (let i = 0; i < size; i++) {
+        // for (let i = 0; i < size; i++) {
 
-            list[i] = i;
+        //     list[i] = i;
+
+        // }
+
+        // new Slider(list);
+
+        let tiles = new Tiles();
+        let width = 10;
+        let length = 10;
+
+        for (let x = 0; x < width; x++) {
+
+            for (let y = 0; y < length; y++) {
+
+                tiles.addTile(x, y, 0);
+
+            }
 
         }
 
-        new Slider(list);
+        tiles.addTile(0, 0, 1);
+        tiles.addCube(1, 0, 1);
+
+        new Block(tiles.tiles, width, length);
 
     },
 
