@@ -3,7 +3,7 @@ gameState = {
     preload: function () {
 
         game.load.spritesheet('tile', 'client/assets/tiles.png', 64, 64);
-        game.load.spritesheet('cube', 'client/assets/cubes.png', 64, 64);
+        game.load.spritesheet('grid', 'client/assets/grid.png', 64, 64);
 
     },
 

@@ -64,7 +64,7 @@ class Grid extends Tile {
 
         this.anchor.setTo(0.5, 0.25);
 
-        this.loadTexture('cube');
+        this.loadTexture('grid');
 
         this.isoX = x;
         this.isoY = y;
