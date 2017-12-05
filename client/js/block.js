@@ -112,33 +112,6 @@ class Block extends Phaser.Graphics {
 
     }
 
-    drawSlope(faces, color) {
-
-        faces.forEach(function (face) {
-
-            this.beginFill(color);
-
-            this.lineStyle(1, 0xffffff, 1);
-
-            this.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
-                1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
-
-            face.forEach(function (point) {
-
-                this.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
-                    1200 / 4 - point.y * 16 + point.x * 16 - point.z * 32 + global.point.y);
-
-            }, this)
-
-            this.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
-                1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
-
-            this.endFill();
-
-        }, this)
-
-    }
-
     update() {
 
         if (this.draw) {
@@ -162,11 +135,31 @@ class Block extends Phaser.Graphics {
 
             }
 
+            this.tiles.forEach(function (tile) {
+
+                if (tile.sort) {
+
+                    tile.sort();
+
+                }
+
+            })
+
             this.tiles.sort(function (a, b) {
 
-                return b.pos.x - a.pos.x + a.pos.y - b.pos.y + a.pos.z - b.pos.z;
+                return b.pos.y - a.pos.y + a.pos.x - b.pos.x + a.pos.z - b.pos.z;
 
             });
+
+            console.log(this.tiles);
+
+            this.clear();
+
+            this.tiles.forEach(function (tile) {
+
+                tile.draw(this);
+
+            }, this)
 
         }
 
@@ -226,11 +219,9 @@ class Tiles {
     }
 
 }
-class Tile extends Phaser.Graphics {
+class Tile {
 
     constructor(x, y, z, color) {
-
-        super(game, 0, 0);
 
         this.color = color;
         this.pos = { x: x, y: y, z: z };
@@ -244,40 +235,35 @@ class Tile extends Phaser.Graphics {
 
         ]
 
-        game.add.existing(this);
     }
 
-    update() {
+    draw(canvas) {
 
-        this.clear();
+        canvas.beginFill(this.color);
 
-        this.beginFill(this.color);
+        canvas.lineStyle(1, 0xffffff, 1);
 
-        this.lineStyle(1, 0xffffff, 1);
-
-        this.moveTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
+        canvas.moveTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
             1200 / 4 - this.face[0].y * 16 + this.face[0].x * 16 - this.face[0].z * 32 + global.point.y);
 
         this.face.forEach(function (point) {
 
-            this.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
+            canvas.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
                 1200 / 4 - point.y * 16 + point.x * 16 - point.z * 32 + global.point.y);
 
-        }, this)
+        })
 
-        this.lineTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
+        canvas.lineTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
             1200 / 4 - this.face[0].y * 16 + this.face[0].x * 16 - this.face[0].z * 32 + global.point.y);
 
-        this.endFill();
+        canvas.endFill();
 
     }
 
 }
-class Cube extends Phaser.Graphics {
+class Cube {
 
     constructor(x, y, z, color) {
-
-        super(game, 0, 0);
 
         this.color = color;
         this.pos = { x: x, y: y, z: z };
@@ -334,10 +320,36 @@ class Cube extends Phaser.Graphics {
 
         ]
 
-        game.add.existing(this);
     }
 
-    update() {
+    draw(canvas) {
+
+        this.faces.forEach(function (face) {
+
+            canvas.beginFill(this.color);
+
+            canvas.lineStyle(1, 0xffffff, 1);
+
+            canvas.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
+                1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
+
+            face.forEach(function (point) {
+
+                canvas.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
+                    1200 / 4 - point.y * 16 + point.x * 16 - point.z * 32 + global.point.y);
+
+            })
+
+            canvas.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
+                1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
+
+            canvas.endFill();
+
+        }, this)
+
+    }
+
+    sort() {
 
         this.faces.forEach(function (face, i) {
 
@@ -361,39 +373,12 @@ class Cube extends Phaser.Graphics {
 
         })
 
-        this.clear();
-
-        this.faces.forEach(function (face) {
-
-            this.beginFill(this.color);
-
-            this.lineStyle(1, 0xffffff, 1);
-
-            this.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
-                1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
-
-            face.forEach(function (point) {
-
-                this.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
-                    1200 / 4 - point.y * 16 + point.x * 16 - point.z * 32 + global.point.y);
-
-            }, this)
-
-            this.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
-                1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
-
-            this.endFill();
-
-        }, this)
-
     }
 
 }
-class Slope extends Phaser.Graphics {
+class Slope {
 
     constructor(x, y, z, angle, color) {
-
-        super(game, 0, 0);
 
         this.color = color;
         this.pos = { x: x, y: y, z: z };
@@ -439,11 +424,36 @@ class Slope extends Phaser.Graphics {
             ]
 
         ]
-
-        game.add.existing(this);
     }
 
-    update() {
+    draw(canvas) {
+
+        this.faces.forEach(function (face) {
+
+            canvas.beginFill(this.color);
+
+            canvas.lineStyle(1, 0xffffff, 1);
+
+            canvas.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
+                1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
+
+            face.forEach(function (point) {
+
+                canvas.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
+                    1200 / 4 - point.y * 16 + point.x * 16 - point.z * 32 + global.point.y);
+
+            })
+
+            canvas.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
+                1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
+
+            canvas.endFill();
+
+        }, this)
+
+    }
+
+    sort() {
 
         this.faces.forEach(function (face, i) {
 
@@ -466,31 +476,6 @@ class Slope extends Phaser.Graphics {
             return b.sum.y - a.sum.y + a.sum.x - b.sum.x + a.sum.z - b.sum.z;
 
         })
-
-        this.clear();
-
-        this.faces.forEach(function (face) {
-
-            this.beginFill(this.color);
-
-            this.lineStyle(1, 0xffffff, 1);
-
-            this.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
-                1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
-
-            face.forEach(function (point) {
-
-                this.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
-                    1200 / 4 - point.y * 16 + point.x * 16 - point.z * 32 + global.point.y);
-
-            }, this)
-
-            this.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
-                1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
-
-            this.endFill();
-
-        }, this)
 
     }
 

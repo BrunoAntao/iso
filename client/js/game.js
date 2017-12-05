@@ -35,7 +35,8 @@ gameState = {
         tiles.addCube(0, 9, 1, 0xff0000);
         tiles.addCube(9, 0, 1, 0xff0000);
         tiles.addCube(9, 9, 1, 0xff0000);
-        tiles.addSlope(0, 1, 1, 0, 0xff0000);
+        tiles.addSlope(0, 1, 1, -Math.PI/2, 0xff0000);
+        tiles.addSlope(1, 0, 1, 0, 0xff0000);
 
         new Block(tiles.tiles, width, length);
 
