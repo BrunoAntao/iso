@@ -209,7 +209,6 @@ class Item extends Phaser.Sprite {
         this.events.onInputDown.add(function (item) {
 
             global.active = { type: tile.block, angle: tile.fangle };
-            console.log(global.active);
 
         }, this)
 
