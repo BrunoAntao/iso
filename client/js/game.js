@@ -14,31 +14,23 @@ gameState = {
         game.stage.disableVisibilityChange = true;
         game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
 
-        global.active = 1;
+        global.active = {type: 'Tile', angle:0};
         global.point = { x: 0, y: 0 };
 
-        let tiles = new Tiles();
         let width = 10;
         let length = 10;
 
-        for (let x = 0; x < width; x++) {
+        new Block(width, length);
 
-            for (let y = 0; y < length; y++) {
+        let items = new Tiles();
+        items.addTile(0, 0, 0);
+        items.addCube(0, 0, 1);
+        items.addSlope(0, 0, 2);
+        items.addSlope(0, 0, 3, Math.PI);
+        items.addSlope(0, 0, 4, -Math.PI/2);
+        items.addSlope(0, 0, 5, Math.PI/2);
 
-                tiles.addTile(x, y, 0, 0x212121);
-
-            }
-
-        }
-
-        tiles.addCube(0, 0, 0, 0xff0000);
-        tiles.addCube(0, 9, 0, 0xff0000);
-        tiles.addCube(9, 0, 0, 0xff0000);
-        tiles.addCube(9, 9, 0, 0xff0000);
-        tiles.addSlope(0, 1, 0, -Math.PI/2, 0xff0000);
-        tiles.addSlope(1, 0, 0, 0, 0xff0000);
-
-        new Block(tiles, width, length);
+        new Slider(items);
 
     },
 

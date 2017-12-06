@@ -1,6 +1,6 @@
 class Slider extends Phaser.Graphics {
 
-    constructor(items) {
+    constructor(list) {
 
         super(game, 0, 0);
 
@@ -12,11 +12,11 @@ class Slider extends Phaser.Graphics {
         this.fixedToCamera = true;
         this.items = game.add.group();
 
-        items.forEach(function (item, i) {
+        for(let i = 0; i < list.children.length; i++) {
 
-            this.items.add(new Item(i, item));
+            this.items.add(new Item(i, list.children[i]));
 
-        }, this)
+        }
 
         game.add.existing(this);
     }
@@ -62,96 +62,27 @@ class Item extends Phaser.Sprite {
 
     constructor(id, tile) {
 
-        let g = new Block([], 1, 1);
+        if(tile.sort) {
 
-        switch (tile.type) {
-
-            case 'cube':
-
-                tile.faces.forEach(function (face, i) {
-
-                    let sum = { x: 0, y: 0, z: 0 };
-
-                    face.forEach(function (point) {
-
-                        sum.x += point.x / face.length;
-                        sum.y += point.y / face.length;
-                        sum.z += point.z / face.length;
-
-                    })
-
-                    face.sum = sum;
-
-                })
-
-                tile.faces.sort(function (a, b) {
-
-                    return b.sum.y - a.sum.y + a.sum.x - b.sum.x + a.sum.z - b.sum.z;
-
-                })
-
-                tile.faces.forEach(function (face, i) {
-
-                    face.sum = undefined;
-
-                })
-
-                break;
-
-            case 'slope':
-
-                tile.faces.forEach(function (face, i) {
-
-                    let sum = { x: 0, y: 0, z: 0 };
-
-                    face.forEach(function (point) {
-
-                        sum.x += point.x / face.length;
-                        sum.y += point.y / face.length;
-                        sum.z += point.z / face.length;
-
-                    })
-
-                    face.sum = sum;
-
-                })
-
-                tile.faces.sort(function (a, b) {
-
-                    return b.sum.y - a.sum.y + a.sum.x - b.sum.x + a.sum.z - b.sum.z;
-
-                })
-
-                tile.faces.forEach(function (face, i) {
-
-                    face.sum = undefined;
-
-                })
-
-                break;
-
-
+            tile.sort();
 
         }
 
-        tile.type = tile.type.charAt(0).toUpperCase() + tile.type.slice(1);
+        tile.draw();
 
-        g['draw' + tile.type](tile.faces, tile.color);
+        super(game, 0, 0, tile.generateTexture());
 
-        super(game, 0, 0, g.generateTexture());
+        tile.clear();
 
         this.anchor.setTo(0.5, 0.5);
 
         this.x = game.width * 3 / 4 + game.width / 8;
         this.y = 64 + id * 64;
-        this.frame = id;
-        this.tileType = tile.type;
-        this.tileAngle = tile.angle;
 
         this.inputEnabled = true;
         this.events.onInputDown.add(function (item) {
 
-            global.active = { type: item.tileType, angle: item.tileAngle };
+            global.active = {type:tile.block, angle:tile.fangle};
             console.log(global.active);
 
         }, this)
