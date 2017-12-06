@@ -196,7 +196,7 @@ class Tiles extends Phaser.Group {
 
     rotate(center, tile, angle) {
 
-        if (tile instanceof Tile) {
+        if (tile instanceof Tile || tile instanceof Grid) {
 
             tile.face.forEach(function (point) {
 
