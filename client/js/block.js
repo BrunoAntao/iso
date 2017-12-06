@@ -145,19 +145,17 @@ class Block extends Phaser.Graphics {
 
             })
 
-            this.tiles.sort(function (a, b) {
+            this.tiles.customSort(function (a, b) {
 
                 return b.pos.y - a.pos.y + a.pos.x - b.pos.x + a.pos.z - b.pos.z;
 
             });
 
-            console.log(this.tiles);
-
             this.clear();
 
             this.tiles.forEach(function (tile) {
 
-                tile.draw(this);
+                tile.draw();
 
             }, this)
 
@@ -167,11 +165,11 @@ class Block extends Phaser.Graphics {
 
 }
 
-class Tiles {
+class Tiles extends Phaser.Group {
 
     constructor() {
 
-        this.tiles = [];
+        super(game);
 
     }
 
@@ -190,17 +188,47 @@ class Tiles {
 
     addTile(x, y, z, color = 0x000000) {
 
-        this.tiles.push(new Tile(x, y, z, color));
+        this.forEach(function (tile) {
+
+            if (tile.iso.x == x && tile.iso.y == y && tile.iso.z == z) {
+
+                this.remove(tile);
+
+            }
+
+        }, this)
+
+        this.add(new Tile(x, y, z, color));
 
     }
 
     addCube(x, y, z, color = 0x000000) {
 
-        this.tiles.push(new Cube(x, y, z, color));
+        this.forEach(function (tile) {
+
+            if (tile.iso.x == x && tile.iso.y == y && tile.iso.z == z) {
+
+                this.remove(tile);
+
+            }
+
+        }, this)
+
+        this.add(new Cube(x, y, z, color));
 
     }
 
     addSlope(x, y, z, angle = 0, color = 0x000000, ) {
+
+        this.forEach(function (tile) {
+
+            if (tile.iso.x == x && tile.iso.y == y && tile.iso.z == z) {
+
+                this.remove(tile);
+
+            }
+
+        }, this)
 
         let slope = new Slope(x, y, z, angle, color);
 
@@ -214,18 +242,49 @@ class Tiles {
 
         }, this)
 
-        this.tiles.push(slope);
+        this.add(slope);
 
     }
 
 }
-class Tile {
+
+class Iso extends Phaser.Graphics {
+
+    constructor(x, y, z) {
+
+        super(game, 0, 0);
+
+        this.pos = { x: x, y: y, z: z };
+        this.iso = { x: x, y: y, z: z };
+
+        this.inputEnabled = true;
+        this.events.onInputDown.add(function (tile) {
+
+            console.log(tile);
+
+        })
+        this.events.onInputOver.add(function (tile) {
+
+            tile.tint = 0xaaaaaa;
+
+        })
+        this.events.onInputOut.add(function (tile) {
+
+            tile.tint = 0xffffff;
+
+        })
+
+        game.add.existing(this);
+    }
+
+}
+class Tile extends Iso {
 
     constructor(x, y, z, color) {
 
+        super(x, y, z);
+
         this.color = color;
-        this.pos = { x: x, y: y, z: z };
-        this.iso = { x: x, y: y, z: z };
         this.face = [
 
             { x: x + 0, y: y + 0, z: z },
@@ -237,37 +296,39 @@ class Tile {
 
     }
 
-    draw(canvas) {
+    draw() {
 
-        canvas.beginFill(this.color);
+        this.clear();
 
-        canvas.lineStyle(1, 0xffffff, 1);
+        this.beginFill(this.color);
 
-        canvas.moveTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
+        this.lineStyle(1, 0xffffff, 1);
+
+        this.moveTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
             1200 / 4 - this.face[0].y * 16 + this.face[0].x * 16 - this.face[0].z * 32 + global.point.y);
 
         this.face.forEach(function (point) {
 
-            canvas.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
+            this.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
                 1200 / 4 - point.y * 16 + point.x * 16 - point.z * 32 + global.point.y);
 
-        })
+        }, this)
 
-        canvas.lineTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
+        this.lineTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
             1200 / 4 - this.face[0].y * 16 + this.face[0].x * 16 - this.face[0].z * 32 + global.point.y);
 
-        canvas.endFill();
+        this.endFill();
 
     }
 
 }
-class Cube {
+class Cube extends Iso {
 
     constructor(x, y, z, color) {
 
+        super(x, y, z);
+
         this.color = color;
-        this.pos = { x: x, y: y, z: z };
-        this.iso = { x: x, y: y, z: z };
         this.faces = [
 
             [
@@ -322,28 +383,30 @@ class Cube {
 
     }
 
-    draw(canvas) {
+    draw() {
+
+        this.clear();
 
         this.faces.forEach(function (face) {
 
-            canvas.beginFill(this.color);
+            this.beginFill(this.color);
 
-            canvas.lineStyle(1, 0xffffff, 1);
+            this.lineStyle(1, 0xffffff, 1);
 
-            canvas.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
+            this.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
                 1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
 
             face.forEach(function (point) {
 
-                canvas.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
+                this.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
                     1200 / 4 - point.y * 16 + point.x * 16 - point.z * 32 + global.point.y);
 
-            })
+            }, this)
 
-            canvas.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
+            this.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
                 1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
 
-            canvas.endFill();
+            this.endFill();
 
         }, this)
 
@@ -376,13 +439,13 @@ class Cube {
     }
 
 }
-class Slope {
+class Slope extends Iso {
 
     constructor(x, y, z, angle, color) {
 
+        super(x, y, z);
+
         this.color = color;
-        this.pos = { x: x, y: y, z: z };
-        this.iso = { x: x, y: y, z: z };
         this.faces = [
 
             [
@@ -424,30 +487,33 @@ class Slope {
             ]
 
         ]
+
     }
 
-    draw(canvas) {
+    draw() {
+
+        this.clear();
 
         this.faces.forEach(function (face) {
 
-            canvas.beginFill(this.color);
+            this.beginFill(this.color);
 
-            canvas.lineStyle(1, 0xffffff, 1);
+            this.lineStyle(1, 0xffffff, 1);
 
-            canvas.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
+            this.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
                 1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
 
             face.forEach(function (point) {
 
-                canvas.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
+                this.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
                     1200 / 4 - point.y * 16 + point.x * 16 - point.z * 32 + global.point.y);
 
-            })
+            }, this)
 
-            canvas.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
+            this.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
                 1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
 
-            canvas.endFill();
+            this.endFill();
 
         }, this)
 

@@ -25,31 +25,20 @@ gameState = {
 
             for (let y = 0; y < length; y++) {
 
-                tiles.addTile(x, y, 0);
+                tiles.addTile(x, y, 0, 0x212121);
 
             }
 
         }
 
-        tiles.addCube(0, 0, 1, 0xff0000);
-        tiles.addCube(0, 9, 1, 0xff0000);
-        tiles.addCube(9, 0, 1, 0xff0000);
-        tiles.addCube(9, 9, 1, 0xff0000);
-        tiles.addSlope(0, 1, 1, -Math.PI/2, 0xff0000);
-        tiles.addSlope(1, 0, 1, 0, 0xff0000);
+        tiles.addCube(0, 0, 0, 0xff0000);
+        tiles.addCube(0, 9, 0, 0xff0000);
+        tiles.addCube(9, 0, 0, 0xff0000);
+        tiles.addCube(9, 9, 0, 0xff0000);
+        tiles.addSlope(0, 1, 0, -Math.PI/2, 0xff0000);
+        tiles.addSlope(1, 0, 0, 0, 0xff0000);
 
-        new Block(tiles.tiles, width, length);
-
-        // let items = new Tiles();
-
-        // items.addTile(0, 0, 0);
-        // items.addCube(1, 0, 0);
-        // items.addSlope(2, 0, 0);
-        // items.addSlope(3, 0, 0, Math.PI);
-        // items.addSlope(4, 0, 0, Math.PI/2);
-        // items.addSlope(5, 0, 0, -Math.PI/2);
-
-        // new Slider(items.tiles);
+        new Block(tiles, width, length);
 
     },
 
