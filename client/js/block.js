@@ -26,7 +26,7 @@ class Block extends Phaser.Graphics {
 
             for (let y = 0; y < length; y++) {
 
-                this.tiles.addTile(x, y, 0, 0x212121);
+                this.tiles.addGrid(x, y, 0, 0x212121);
 
             }
 
@@ -62,7 +62,7 @@ class Block extends Phaser.Graphics {
 
     rotate(tile, angle) {
 
-        if (tile instanceof Tile) {
+        if (tile instanceof Tile || tile instanceof Grid) {
 
             tile.face.forEach(function (point) {
 
@@ -287,6 +287,29 @@ class Tiles extends Phaser.Group {
 
     }
 
+    addGrid(x, y, z, color = 0x000000) {
+
+        this.forEach(function (tile) {
+
+            if (tile.iso.x == x && tile.iso.y == y && tile.iso.z == z) {
+
+                this.remove(tile);
+
+            }
+
+        }, this)
+
+        let grid = new Grid(x, y, z, color, this);
+
+        if (this.map) {
+
+            this.rotate({ x: this.map.center.x, y: this.map.center.y }, grid, this.map.iso.worldAngle);
+
+        }
+
+        this.add(grid);
+    }
+
     addTile(x, y, z, color = 0x000000) {
 
         this.forEach(function (tile) {
@@ -377,19 +400,47 @@ class Iso extends Phaser.Graphics {
 
             if (game.input.activePointer.leftButton.isDown) {
 
-                if (global.active.type != 'Slope') {
+                if (!(tile instanceof Grid)) {
 
-                    tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z + 1);
+                    if (global.active.type != 'Slope') {
+
+                        tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z + 1);
+
+                    } else {
+
+                        tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z + 1, global.active.angle);
+
+                    }
 
                 } else {
 
-                    tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z + 1, global.active.angle);
+                    if (global.active.type != 'Slope') {
+
+                        tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z);
+
+                    } else {
+
+                        tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z, global.active.angle);
+
+                    }
 
                 }
 
             } else {
 
-                tile.tiles.remove(tile);
+                if (!(tile instanceof Grid)) {
+
+                    if (tile.iso.z == 0) {
+
+                        tile.tiles.addGrid(tile.iso.x, tile.iso.y, tile.iso.z, 0x212121);
+
+                    } else {
+
+                        tile.tiles.remove(tile);
+
+                    }
+
+                }
 
             }
 
@@ -406,6 +457,51 @@ class Iso extends Phaser.Graphics {
         })
 
         game.add.existing(this);
+    }
+
+}
+class Grid extends Iso {
+
+    constructor(x, y, z, color, parent) {
+
+        super(x, y, z, parent);
+
+        this.color = color;
+        this.block = 'Grid';
+        this.face = [
+
+            { x: x + 0, y: y + 0, z: z },
+            { x: x + 1, y: y + 0, z: z },
+            { x: x + 1, y: y + 1, z: z },
+            { x: x + 0, y: y + 1, z: z }
+
+        ]
+
+    }
+
+    draw() {
+
+        this.clear();
+
+        this.beginFill(this.color);
+
+        this.lineStyle(1, 0xffffff, 1);
+
+        this.moveTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
+            1200 / 4 - this.face[0].y * 16 + this.face[0].x * 16 - this.face[0].z * 32 + global.point.y);
+
+        this.face.forEach(function (point) {
+
+            this.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
+                1200 / 4 - point.y * 16 + point.x * 16 - point.z * 32 + global.point.y);
+
+        }, this)
+
+        this.lineTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
+            1200 / 4 - this.face[0].y * 16 + this.face[0].x * 16 - this.face[0].z * 32 + global.point.y);
+
+        this.endFill();
+
     }
 
 }
