@@ -162,20 +162,20 @@ class Slider extends Phaser.Graphics {
 
         if (game.input.activePointer.rightButton.isDown) {
 
-            if (game.origDragPointr) {
+            if (game.origDragPointsr) {
 
-                this.worldAngle(-(game.input.activePointer.x - game.origDragPointr.x) / 100);
+                this.worldAngle(-(game.input.activePointer.x - game.origDragPointsr.x) / 100);
 
             } else {
 
-                game.origDragPointr = game.input.activePointer.position.clone();
+                game.origDragPointsr = game.input.activePointer.position.clone();
                 this.iso.angle = 0;
 
             }
 
         } else {
 
-            game.origDragPointr = null;
+            game.origDragPointsr = null;
 
         }
 
