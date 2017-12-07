@@ -16,7 +16,8 @@ class Block extends Phaser.Graphics {
         this.iso = {
 
             angle: 0,
-            worldAngle: 0
+            worldAngle: 0,
+            pre: 1
 
         }
 
@@ -38,6 +39,15 @@ class Block extends Phaser.Graphics {
         this.tiles.addCube(9, 9, 0, 0xff0000);
         this.tiles.addSlope(0, 1, 0, -Math.PI / 2, 0xff0000);
         this.tiles.addSlope(1, 0, 0, 0, 0xff0000);
+
+        this.tiles.addSlope(9, 1, 0, -Math.PI / 2, 0xff0000);
+        this.tiles.addSlope(8, 0, 0, Math.PI, 0xff0000);
+
+        this.tiles.addSlope(0, 8, 0, Math.PI / 2, 0xff0000);
+        this.tiles.addSlope(1, 9, 0, 0, 0xff0000);
+
+        this.tiles.addSlope(9, 8, 0, Math.PI / 2, 0xff0000);
+        this.tiles.addSlope(8, 9, 0, Math.PI, 0xff0000);
 
         game.add.existing(this);
     }
@@ -135,6 +145,12 @@ class Block extends Phaser.Graphics {
     update() {
 
         if (this.draw) {
+
+            if(document.getElementById('range')) {
+
+                this.iso.pre = document.getElementById('range').value;
+
+            }
 
             if (game.input.activePointer.rightButton.isDown) {
 
@@ -384,7 +400,6 @@ class Tiles extends Phaser.Group {
     }
 
 }
-
 class Iso extends Phaser.Graphics {
 
     constructor(x, y, z, parent) {
@@ -488,17 +503,17 @@ class Grid extends Iso {
         this.lineStyle(1, 0xffffff, 1);
 
         this.moveTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
-            1200 / 4 - this.face[0].y * 16 + this.face[0].x * 16 - this.face[0].z * 32 + global.point.y);
+            1200 / 4 - this.face[0].y * 16 * this.tiles.map.iso.pre + this.face[0].x * 16 * this.tiles.map.iso.pre - this.face[0].z * 32 + global.point.y);
 
         this.face.forEach(function (point) {
 
             this.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
-                1200 / 4 - point.y * 16 + point.x * 16 - point.z * 32 + global.point.y);
+                1200 / 4 - point.y * 16 * this.tiles.map.iso.pre + point.x * 16 * this.tiles.map.iso.pre - point.z * 32 + global.point.y);
 
         }, this)
 
         this.lineTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
-            1200 / 4 - this.face[0].y * 16 + this.face[0].x * 16 - this.face[0].z * 32 + global.point.y);
+            1200 / 4 - this.face[0].y * 16 * this.tiles.map.iso.pre + this.face[0].x * 16 * this.tiles.map.iso.pre - this.face[0].z * 32 + global.point.y);
 
         this.endFill();
 
@@ -533,17 +548,17 @@ class Tile extends Iso {
         this.lineStyle(1, 0xffffff, 1);
 
         this.moveTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
-            1200 / 4 - this.face[0].y * 16 + this.face[0].x * 16 - this.face[0].z * 32 + global.point.y);
+            1200 / 4 - this.face[0].y * 16 * this.tiles.map.iso.pre + this.face[0].x * 16 * this.tiles.map.iso.pre - this.face[0].z * 32 + global.point.y);
 
         this.face.forEach(function (point) {
 
             this.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
-                1200 / 4 - point.y * 16 + point.x * 16 - point.z * 32 + global.point.y);
+                1200 / 4 - point.y * 16 * this.tiles.map.iso.pre + point.x * 16 * this.tiles.map.iso.pre - point.z * 32 + global.point.y);
 
         }, this)
 
         this.lineTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
-            1200 / 4 - this.face[0].y * 16 + this.face[0].x * 16 - this.face[0].z * 32 + global.point.y);
+            1200 / 4 - this.face[0].y * 16 * this.tiles.map.iso.pre + this.face[0].x * 16 * this.tiles.map.iso.pre - this.face[0].z * 32 + global.point.y);
 
         this.endFill();
 
@@ -623,17 +638,17 @@ class Cube extends Iso {
             this.lineStyle(1, 0xffffff, 1);
 
             this.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
-                1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
+                1200 / 4 - face[0].y * 16 * this.tiles.map.iso.pre + face[0].x * 16 * this.tiles.map.iso.pre - face[0].z * 32 + global.point.y);
 
             face.forEach(function (point) {
 
                 this.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
-                    1200 / 4 - point.y * 16 + point.x * 16 - point.z * 32 + global.point.y);
+                    1200 / 4 - point.y * 16 * this.tiles.map.iso.pre + point.x * 16 * this.tiles.map.iso.pre - point.z * 32 + global.point.y);
 
             }, this)
 
             this.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
-                1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
+                1200 / 4 - face[0].y * 16 * this.tiles.map.iso.pre + face[0].x * 16 * this.tiles.map.iso.pre - face[0].z * 32 + global.point.y);
 
             this.endFill();
 
@@ -732,17 +747,17 @@ class Slope extends Iso {
             this.lineStyle(1, 0xffffff, 1);
 
             this.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
-                1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
+                1200 / 4 - face[0].y * 16 * this.tiles.map.iso.pre + face[0].x * 16 * this.tiles.map.iso.pre - face[0].z * 32 + global.point.y);
 
             face.forEach(function (point) {
 
                 this.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
-                    1200 / 4 - point.y * 16 + point.x * 16 - point.z * 32 + global.point.y);
+                    1200 / 4 - point.y * 16 * this.tiles.map.iso.pre + point.x * 16 * this.tiles.map.iso.pre - point.z * 32 + global.point.y);
 
             }, this)
 
             this.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
-                1200 / 4 - face[0].y * 16 + face[0].x * 16 - face[0].z * 32 + global.point.y);
+                1200 / 4 - face[0].y * 16 * this.tiles.map.iso.pre + face[0].x * 16 * this.tiles.map.iso.pre - face[0].z * 32 + global.point.y);
 
             this.endFill();
 

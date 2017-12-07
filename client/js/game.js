@@ -20,9 +20,9 @@ gameState = {
         let width = 10;
         let length = 10;
 
-        new Block(width, length);
+        global.map = new Block(width, length);
 
-        let items = new Tiles();
+        let items = new Tiles(global.map);
         items.addTile(0, 0, 0);
         items.addCube(0, 0, 1);
         items.addSlope(0, 0, 2);

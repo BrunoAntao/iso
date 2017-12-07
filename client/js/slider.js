@@ -25,6 +25,19 @@ class Slider extends Phaser.Graphics {
 
         }
 
+        let div = document.getElementById('game');
+
+        this.slider = document.createElement("INPUT");
+        this.slider.setAttribute('type', 'range');
+        this.slider.setAttribute('id', 'range');
+        this.slider.setAttribute('min', 0);
+        this.slider.setAttribute('max', 1);
+        this.slider.setAttribute('step', 0.1);
+        this.slider.setAttribute('value', 1);
+        this.slider.style.position = 'absolute';
+
+        document.getElementById("game").appendChild(this.slider);
+
         game.add.existing(this);
     }
 
@@ -41,14 +54,6 @@ class Slider extends Phaser.Graphics {
         this.items.forEach(function (item) {
 
             this.rotate(item.tile, angle);
-            if (item.tile.sort) {
-
-                item.tile.sort();
-
-            }
-            item.tile.draw();
-            item.loadTexture(item.tile.generateTexture());
-            item.tile.clear();
 
         }, this)
 
@@ -136,6 +141,9 @@ class Slider extends Phaser.Graphics {
 
         game.world.bringToTop(this.items);
 
+        this.slider.style.top = game.height * 3 / 4 + game.height / 8 + 'px';
+        this.slider.style.left = game.width * 3 / 4 + game.width / 16 + 'px';
+
         let items = this.items;
 
         game.input.mouse.mouseWheelCallback = function (e) {
@@ -178,6 +186,20 @@ class Slider extends Phaser.Graphics {
             game.origDragPointsr = null;
 
         }
+
+        this.items.forEach(function (item) {
+
+            if (item.tile.sort) {
+
+                item.tile.sort();
+
+            }
+
+            item.tile.draw();
+            item.loadTexture(item.tile.generateTexture());
+            item.tile.clear();
+
+        })
 
     }
 
