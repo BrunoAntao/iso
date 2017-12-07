@@ -25,6 +25,7 @@ gameState = {
         items.addSlope(0, 0, -6, Math.PI);
         items.addSlope(0, 0, -8, -Math.PI/2);
         items.addSlope(0, 0, -10, Math.PI/2);
+        
 
         new Slider(items);
 
