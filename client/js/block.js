@@ -53,9 +53,9 @@ class Block extends Phaser.Graphics {
 
         let map = this;
 
-        game.input.keyboard.onDownCallback = function(e) {
+        game.input.keyboard.onDownCallback = function (e) {
 
-            switch(e.key) {
+            switch (e.key) {
 
                 case '+': map.iso.scale += 0.1; break;
                 case '-': map.iso.scale -= 0.1; break;
@@ -215,7 +215,6 @@ class Block extends Phaser.Graphics {
     }
 
 }
-
 class Tiles extends Phaser.Group {
 
     constructor(parent) {
