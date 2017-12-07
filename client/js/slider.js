@@ -141,6 +141,7 @@ class Slider extends Phaser.Graphics {
 
         game.world.bringToTop(this.items);
 
+        this.slider.style.width = game.width / 8 + 'px';
         this.slider.style.top = game.height * 3 / 4 + game.height / 8 + 'px';
         this.slider.style.left = game.width * 3 / 4 + game.width / 16 + 'px';
 
@@ -148,7 +149,7 @@ class Slider extends Phaser.Graphics {
 
         game.input.mouse.mouseWheelCallback = function (e) {
 
-            if (e.deltaY < 0 && items.children[0].y > -(items.length - 1) * 32) {
+            if (e.deltaY < 0 && items.children[0].y > -(items.length - 1) * 32 - 202) {
 
                 items.forEach(function (item) {
 
@@ -156,7 +157,7 @@ class Slider extends Phaser.Graphics {
 
                 })
 
-            } else if (e.deltaY > 0 && items.children[0].y < 64) {
+            } else if (e.deltaY > 0 && items.children[0].y < - 252) {
 
                 items.forEach(function (item) {
 
@@ -195,18 +196,18 @@ class Slider extends Phaser.Graphics {
 
             }
 
-            item.tile.draw();
-            item.loadTexture(item.tile.generateTexture());
-            item.tile.clear();
+            item.tile.export(item);
 
         })
 
     }
 
 }
-class Item extends Phaser.Sprite {
+class Item extends Phaser.Graphics {
 
     constructor(id, tile) {
+
+        super(game, 0, 0);
 
         if (tile.sort) {
 
@@ -214,16 +215,12 @@ class Item extends Phaser.Sprite {
 
         }
 
-        tile.draw();
-
-        super(game, 0, 0, tile.generateTexture());
-
-        tile.clear();
+        tile.export(this);
 
         this.anchor.setTo(0.5, 0.5);
 
-        this.x = game.width * 3 / 4 + game.width / 8;
-        this.y = 64 + id * 64;
+        this.x = game.width * 3 / 4 + game.width / 32;
+        this.y = -252;
 
         this.tile = tile;
 
@@ -239,7 +236,7 @@ class Item extends Phaser.Sprite {
 
     update() {
 
-        this.x = game.width * 3 / 4 + game.width / 8;
+        this.x = game.width * 3 / 4 + game.width / 8 - 300/ 4 - 32;
 
     }
 

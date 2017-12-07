@@ -1,10 +1,6 @@
 gameState = {
 
     preload: function () {
-
-        game.load.spritesheet('tile', 'client/assets/tiles.png', 64, 64);
-        game.load.spritesheet('grid', 'client/assets/grid.png', 64, 64);
-
     },
 
     create: function () {
@@ -24,11 +20,11 @@ gameState = {
 
         let items = new Tiles(global.map);
         items.addTile(0, 0, 0);
-        items.addCube(0, 0, 1);
-        items.addSlope(0, 0, 2);
-        items.addSlope(0, 0, 3, Math.PI);
-        items.addSlope(0, 0, 4, -Math.PI/2);
-        items.addSlope(0, 0, 5, Math.PI/2);
+        items.addCube(0, 0, -2);
+        items.addSlope(0, 0, -4);
+        items.addSlope(0, 0, -6, Math.PI);
+        items.addSlope(0, 0, -8, -Math.PI/2);
+        items.addSlope(0, 0, -10, Math.PI/2);
 
         new Slider(items);
 
