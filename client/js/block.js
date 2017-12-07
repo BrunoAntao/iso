@@ -18,6 +18,7 @@ class Block extends Phaser.Graphics {
 
             angle: 0,
             worldAngle: 0,
+            scale: 1,
             pre: 1
 
         }
@@ -49,6 +50,19 @@ class Block extends Phaser.Graphics {
 
         this.tiles.addSlope(9, 8, 0, Math.PI / 2, 0xff0000);
         this.tiles.addSlope(8, 9, 0, Math.PI, 0xff0000);
+
+        let map = this;
+
+        game.input.keyboard.onDownCallback = function(e) {
+
+            switch(e.key) {
+
+                case '+': map.iso.scale += 0.1; break;
+                case '-': map.iso.scale -= 0.1; break;
+
+            }
+
+        }
 
         game.add.existing(this);
     }
@@ -473,6 +487,12 @@ class Iso extends Phaser.Graphics {
         })
 
         game.add.existing(this);
+    }
+
+    update() {
+
+        this.scale.setTo(this.tiles.map.iso.scale, this.tiles.map.iso.scale);
+
     }
 
 }

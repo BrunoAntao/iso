@@ -13,8 +13,8 @@ gameState = {
         global.active = {type: 'Tile', angle:0};
         global.point = { x: 0, y: 0 };
 
-        let width = 10;
-        let length = 10;
+        let width = 25;
+        let length = 25;
         let height = 10;
 
         global.map = new Block(width, length, height);
