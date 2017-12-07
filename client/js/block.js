@@ -19,7 +19,7 @@ class Block extends Phaser.Graphics {
             angle: 0,
             worldAngle: 0,
             scale: 1,
-            pre: 1
+            pre: 1,
 
         }
 
@@ -57,8 +57,8 @@ class Block extends Phaser.Graphics {
 
             switch (e.key) {
 
-                case '+': map.iso.scale += 0.1; break;
-                case '-': map.iso.scale -= 0.1; break;
+                case '+': if (map.iso.scale < 2) { map.iso.scale += 0.1; } break;
+                case '-': if (map.iso.scale > 0.2) { map.iso.scale -= 0.1; } break;
 
             }
 
@@ -202,11 +202,16 @@ class Block extends Phaser.Graphics {
 
             });
 
-            this.clear();
-
             this.tiles.forEach(function (tile) {
 
                 tile.draw();
+
+            }, this)
+
+            this.tiles.forEach(function (tile) {
+
+                tile.x = 300 / 4 * (1 - this.iso.scale) + this.center.x * 64 * (1 - this.iso.scale);
+                tile.y = 1200 / 4 * (1 - this.iso.scale) - 16 * this.iso.pre * (1 - this.iso.scale) + 16 * this.iso.pre * (1 - this.iso.scale) - 32 * (1 - this.iso.scale);
 
             }, this)
 
