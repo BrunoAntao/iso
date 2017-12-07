@@ -15,8 +15,9 @@ gameState = {
 
         let width = 10;
         let length = 10;
+        let height = 10;
 
-        global.map = new Block(width, length);
+        global.map = new Block(width, length, height);
 
         let items = new Tiles(global.map);
         items.addTile(0, 0, 0);
@@ -25,7 +26,6 @@ gameState = {
         items.addSlope(0, 0, -6, Math.PI);
         items.addSlope(0, 0, -8, -Math.PI/2);
         items.addSlope(0, 0, -10, Math.PI/2);
-        
 
         new Slider(items);
 

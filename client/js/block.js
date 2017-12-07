@@ -1,6 +1,6 @@
 class Block extends Phaser.Graphics {
 
-    constructor(width, length, draw = true) {
+    constructor(width, length, height, draw = true) {
 
         super(game, 0, 0);
 
@@ -9,7 +9,8 @@ class Block extends Phaser.Graphics {
         this.center = {
 
             x: width / 2,
-            y: length / 2
+            y: length / 2,
+            z: height / 2
 
         }
 
@@ -502,18 +503,18 @@ class Grid extends Iso {
 
         canvas.lineStyle(1, 0xffffff, 1);
 
-        canvas.moveTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
-            1200 / 4 - this.face[0].y * 16 * this.tiles.map.iso.pre + this.face[0].x * 16 * this.tiles.map.iso.pre - this.face[0].z * 32 + global.point.y);
+        canvas.moveTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32,
+            1200 / 4 - this.face[0].y * 16 * this.tiles.map.iso.pre + this.face[0].x * 16 * this.tiles.map.iso.pre - this.face[0].z * 32);
 
         this.face.forEach(function (point) {
 
-            canvas.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
-                1200 / 4 - point.y * 16 * this.tiles.map.iso.pre + point.x * 16 * this.tiles.map.iso.pre - point.z * 32 + global.point.y);
+            canvas.lineTo(300 / 4 + point.x * 32 + point.y * 32,
+                1200 / 4 - point.y * 16 * this.tiles.map.iso.pre + point.x * 16 * this.tiles.map.iso.pre - point.z * 32);
 
         }, this)
 
-        canvas.lineTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
-            1200 / 4 - this.face[0].y * 16 * this.tiles.map.iso.pre + this.face[0].x * 16 * this.tiles.map.iso.pre - this.face[0].z * 32 + global.point.y);
+        canvas.lineTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32,
+            1200 / 4 - this.face[0].y * 16 * this.tiles.map.iso.pre + this.face[0].x * 16 * this.tiles.map.iso.pre - this.face[0].z * 32);
 
         canvas.endFill();
 
@@ -572,18 +573,18 @@ class Tile extends Iso {
 
         canvas.lineStyle(1, 0xffffff, 1);
 
-        canvas.moveTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
-            1200 / 4 - this.face[0].y * 16 * this.tiles.map.iso.pre + this.face[0].x * 16 * this.tiles.map.iso.pre - this.face[0].z * 32 + global.point.y);
+        canvas.moveTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32,
+            1200 / 4 - this.face[0].y * 16 * this.tiles.map.iso.pre + this.face[0].x * 16 * this.tiles.map.iso.pre - this.face[0].z * 32);
 
         this.face.forEach(function (point) {
 
-            canvas.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
-                1200 / 4 - point.y * 16 * this.tiles.map.iso.pre + point.x * 16 * this.tiles.map.iso.pre - point.z * 32 + global.point.y);
+            canvas.lineTo(300 / 4 + point.x * 32 + point.y * 32,
+                1200 / 4 - point.y * 16 * this.tiles.map.iso.pre + point.x * 16 * this.tiles.map.iso.pre - point.z * 32);
 
         }, this)
 
-        canvas.lineTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32 + global.point.x,
-            1200 / 4 - this.face[0].y * 16 * this.tiles.map.iso.pre + this.face[0].x * 16 * this.tiles.map.iso.pre - this.face[0].z * 32 + global.point.y);
+        canvas.lineTo(300 / 4 + this.face[0].x * 32 + this.face[0].y * 32,
+            1200 / 4 - this.face[0].y * 16 * this.tiles.map.iso.pre + this.face[0].x * 16 * this.tiles.map.iso.pre - this.face[0].z * 32);
 
         canvas.endFill();
 
@@ -687,18 +688,18 @@ class Cube extends Iso {
 
             canvas.lineStyle(1, 0xffffff, 1);
 
-            canvas.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
-                1200 / 4 - face[0].y * 16 * this.tiles.map.iso.pre + face[0].x * 16 * this.tiles.map.iso.pre - face[0].z * 32 + global.point.y);
+            canvas.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32,
+                1200 / 4 - face[0].y * 16 * this.tiles.map.iso.pre + face[0].x * 16 * this.tiles.map.iso.pre - face[0].z * 32);
 
             face.forEach(function (point) {
 
-                canvas.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
-                    1200 / 4 - point.y * 16 * this.tiles.map.iso.pre + point.x * 16 * this.tiles.map.iso.pre - point.z * 32 + global.point.y);
+                canvas.lineTo(300 / 4 + point.x * 32 + point.y * 32,
+                    1200 / 4 - point.y * 16 * this.tiles.map.iso.pre + point.x * 16 * this.tiles.map.iso.pre - point.z * 32);
 
             }, this)
 
-            canvas.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
-                1200 / 4 - face[0].y * 16 * this.tiles.map.iso.pre + face[0].x * 16 * this.tiles.map.iso.pre - face[0].z * 32 + global.point.y);
+            canvas.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32,
+                1200 / 4 - face[0].y * 16 * this.tiles.map.iso.pre + face[0].x * 16 * this.tiles.map.iso.pre - face[0].z * 32);
 
             canvas.endFill();
 
@@ -825,18 +826,18 @@ class Slope extends Iso {
 
             canvas.lineStyle(1, 0xffffff, 1);
 
-            canvas.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
-                1200 / 4 - face[0].y * 16 * this.tiles.map.iso.pre + face[0].x * 16 * this.tiles.map.iso.pre - face[0].z * 32 + global.point.y);
+            canvas.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32,
+                1200 / 4 - face[0].y * 16 * this.tiles.map.iso.pre + face[0].x * 16 * this.tiles.map.iso.pre - face[0].z * 32);
 
             face.forEach(function (point) {
 
-                canvas.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
-                    1200 / 4 - point.y * 16 * this.tiles.map.iso.pre + point.x * 16 * this.tiles.map.iso.pre - point.z * 32 + global.point.y);
+                canvas.lineTo(300 / 4 + point.x * 32 + point.y * 32,
+                    1200 / 4 - point.y * 16 * this.tiles.map.iso.pre + point.x * 16 * this.tiles.map.iso.pre - point.z * 32);
 
             }, this)
 
-            canvas.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
-                1200 / 4 - face[0].y * 16 * this.tiles.map.iso.pre + face[0].x * 16 * this.tiles.map.iso.pre - face[0].z * 32 + global.point.y);
+            canvas.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32,
+                1200 / 4 - face[0].y * 16 * this.tiles.map.iso.pre + face[0].x * 16 * this.tiles.map.iso.pre - face[0].z * 32);
 
             canvas.endFill();
 
