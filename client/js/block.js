@@ -319,16 +319,6 @@ class Tiles extends Phaser.Group {
 
     addGrid(x, y, z, color = 0x000000) {
 
-        this.forEach(function (tile) {
-
-            if (tile.iso.x == x && tile.iso.y == y && tile.iso.z == z) {
-
-                this.remove(tile);
-
-            }
-
-        }, this)
-
         let grid = new Grid(x, y, z, color, this);
 
         if (this.map) {
@@ -341,16 +331,6 @@ class Tiles extends Phaser.Group {
     }
 
     addTile(x, y, z, color = 0x000000) {
-
-        this.forEach(function (tile) {
-
-            if (tile.iso.x == x && tile.iso.y == y && tile.iso.z == z) {
-
-                this.remove(tile);
-
-            }
-
-        }, this)
 
         let tile = new Tile(x, y, z, color, this);
 
@@ -365,16 +345,6 @@ class Tiles extends Phaser.Group {
 
     addCube(x, y, z, color = 0x000000) {
 
-        this.forEach(function (tile) {
-
-            if (tile.iso.x == x && tile.iso.y == y && tile.iso.z == z) {
-
-                this.remove(tile);
-
-            }
-
-        }, this)
-
         let cube = new Cube(x, y, z, color, this);
 
         if (this.map) {
@@ -388,16 +358,6 @@ class Tiles extends Phaser.Group {
     }
 
     addSlope(x, y, z, angle = 0, color = 0x000000) {
-
-        this.forEach(function (tile) {
-
-            if (tile.iso.x == x && tile.iso.y == y && tile.iso.z == z) {
-
-                this.remove(tile);
-
-            }
-
-        }, this)
 
         let slope = new Slope(x, y, z, angle, color, this);
 
@@ -460,15 +420,7 @@ class Iso extends Phaser.Graphics {
 
                 if (!(tile instanceof Grid)) {
 
-                    if (tile.iso.z == 0) {
-
-                        tile.tiles.addGrid(tile.iso.x, tile.iso.y, tile.iso.z, 0x212121);
-
-                    } else {
-
-                        tile.tiles.remove(tile);
-
-                    }
+                    tile.tiles.remove(tile);
 
                 }
 
@@ -600,6 +552,7 @@ class Grid extends Iso {
 
         super(x, y, z, parent);
 
+        this.pos.z -= 2;
         this.color = color;
         this.block = 'Grid';
         this.face = [
