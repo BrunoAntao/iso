@@ -422,6 +422,7 @@ class Iso extends Phaser.Graphics {
 
         this.pos = { x: x, y: y, z: z };
         this.iso = { x: x, y: y, z: z };
+        this.opos = { x: x, y: y, z: z };
         this.tiles = parent;
 
         this.inputEnabled = true;
@@ -486,6 +487,104 @@ class Iso extends Phaser.Graphics {
         })
 
         game.add.existing(this);
+    }
+
+    move(vector) {
+
+        if (!(this instanceof Grid)) {
+
+            this.iso.x += vector.x;
+            this.iso.y += vector.y;
+            this.iso.z += vector.z;
+
+            this.d.x += vector.x;
+            this.d.y += vector.y;
+            this.d.z += vector.z;
+
+            if (this instanceof Tile) {
+
+                this.face.forEach(function (point, b) {
+
+                    point.x = this.d.x + this.oface[b].x + vector.x;
+                    point.y = this.d.y + this.oface[b].y + vector.y;
+                    point.z = this.d.z + this.oface[b].z + vector.z;
+
+                    let dx = point.x - this.tiles.map.center.x;
+                    let dy = point.y - this.tiles.map.center.y;
+
+                    let r = Math.sqrt(dx * dx + dy * dy);
+                    let a = Math.atan2(dy, dx) - this.tiles.map.iso.worldAngle;
+
+                    point.x = this.tiles.map.center.x + r * Math.cos(a);
+                    point.y = this.tiles.map.center.y + r * Math.sin(a);
+
+                }, this)
+
+                this.pos.x = this.d.x + this.opos.x + vector.x;
+                this.pos.y = this.d.y + this.opos.y + vector.y;
+                this.pos.z = this.d.z + this.opos.z + vector.z;
+
+                let dx = this.pos.x - this.tiles.map.center.x;
+                let dy = this.pos.y - this.tiles.map.center.y;
+
+                let r = Math.sqrt(dx * dx + dy * dy);
+                let a = Math.atan2(dy, dx) - this.tiles.map.iso.worldAngle;
+
+                this.pos.x = this.tiles.map.center.x + r * Math.cos(a);
+                this.pos.y = this.tiles.map.center.y + r * Math.sin(a);
+
+            } else {
+
+                this.pos.x = this.d.x + this.opos.x + vector.x;
+                this.pos.y = this.d.y + this.opos.y + vector.y;
+                this.pos.z = this.d.z + this.opos.z + vector.z;
+
+                this.faces.forEach(function (face) {
+
+                    face.forEach(function (point, i) {
+
+                        point.x = this.d.x + face.oface[i].x + vector.x;
+                        point.y = this.d.y + face.oface[i].y + vector.y;
+                        point.z = this.d.z + face.oface[i].z + vector.z;
+
+                        let dx = point.x - (this.pos.x + 0.5);
+                        let dy = point.y - (this.pos.y + 0.5);
+
+                        let r = Math.sqrt(dx * dx + dy * dy);
+                        let a = Math.atan2(dy, dx) - this.fangle;
+
+                        point.x = this.pos.x + 0.5 + r * Math.cos(a);
+                        point.y = this.pos.y + 0.5 + r * Math.sin(a);
+
+                        dx = point.x - this.tiles.map.center.x;
+                        dy = point.y - this.tiles.map.center.y;
+
+                        r = Math.sqrt(dx * dx + dy * dy);
+                        a = Math.atan2(dy, dx) - this.tiles.map.iso.worldAngle;
+
+                        point.x = this.tiles.map.center.x + r * Math.cos(a);
+                        point.y = this.tiles.map.center.y + r * Math.sin(a);
+
+
+
+
+                    }, this)
+
+                }, this)
+
+                let dx = this.pos.x - this.tiles.map.center.x;
+                let dy = this.pos.y - this.tiles.map.center.y;
+
+                let r = Math.sqrt(dx * dx + dy * dy);
+                let a = Math.atan2(dy, dx) - this.tiles.map.iso.worldAngle;
+
+                this.pos.x = this.tiles.map.center.x + r * Math.cos(a);
+                this.pos.y = this.tiles.map.center.y + r * Math.sin(a);
+
+            }
+
+        }
+
     }
 
     update() {
@@ -573,6 +672,15 @@ class Tile extends Iso {
 
         this.color = color;
         this.block = 'Tile';
+        this.d = { x: 0, y: 0, z: 0 };
+        this.oface = [
+
+            { x: x + 0, y: y + 0, z: z },
+            { x: x + 1, y: y + 0, z: z },
+            { x: x + 1, y: y + 1, z: z },
+            { x: x + 0, y: y + 1, z: z }
+
+        ]
         this.face = [
 
             { x: x + 0, y: y + 0, z: z },
@@ -643,6 +751,59 @@ class Cube extends Iso {
 
         this.color = color;
         this.block = 'Cube';
+        this.fangle = 0;
+        this.d = { x: 0, y: 0, z: 0 };
+        this.ofaces = [
+
+            [
+                { x: x + 0, y: y + 0, z: z },
+                { x: x + 1, y: y + 0, z: z },
+                { x: x + 1, y: y + 1, z: z },
+                { x: x + 0, y: y + 1, z: z },
+
+            ],
+            [
+
+                { x: x + 0, y: y + 0, z: z + 1 },
+                { x: x + 0, y: y + 0, z: z + 0 },
+                { x: x + 0, y: y + 1, z: z + 0 },
+                { x: x + 0, y: y + 1, z: z + 1 },
+
+            ],
+            [
+
+                { x: x + 1, y: y + 0, z: z + 0 },
+                { x: x + 1, y: y + 0, z: z + 1 },
+                { x: x + 1, y: y + 1, z: z + 1 },
+                { x: x + 1, y: y + 1, z: z + 0 },
+
+            ],
+            [
+
+                { x: x + 0, y: y + 1, z: z + 1 },
+                { x: x + 0, y: y + 1, z: z + 0 },
+                { x: x + 1, y: y + 1, z: z + 0 },
+                { x: x + 1, y: y + 1, z: z + 1 },
+
+            ],
+            [
+
+                { x: x + 0, y: y + 0, z: z + 0 },
+                { x: x + 0, y: y + 0, z: z + 1 },
+                { x: x + 1, y: y + 0, z: z + 1 },
+                { x: x + 1, y: y + 0, z: z + 0 },
+
+            ],
+            [
+
+                { x: x + 0, y: y + 0, z: z + 1 },
+                { x: x + 1, y: y + 0, z: z + 1 },
+                { x: x + 1, y: y + 1, z: z + 1 },
+                { x: x + 0, y: y + 1, z: z + 1 },
+
+            ],
+
+        ]
         this.faces = [
 
             [
@@ -694,6 +855,12 @@ class Cube extends Iso {
             ],
 
         ]
+
+        this.faces.forEach(function (face, i) {
+
+            face.oface = this.ofaces[i];
+
+        }, this)
 
     }
 
@@ -757,7 +924,7 @@ class Cube extends Iso {
 
     sort() {
 
-        this.faces.forEach(function (face, i) {
+        this.faces.forEach(function (face) {
 
             let sum = { x: 0, y: 0, z: 0 };
 
@@ -791,6 +958,48 @@ class Slope extends Iso {
         this.color = color;
         this.block = 'Slope';
         this.fangle = angle;
+        this.d = { x: 0, y: 0, z: 0 };
+        this.ofaces = [
+
+            [
+                { x: x + 0, y: y + 0, z: z },
+                { x: x + 1, y: y + 0, z: z },
+                { x: x + 1, y: y + 1, z: z },
+                { x: x + 0, y: y + 1, z: z },
+
+            ],
+            [
+
+                { x: x + 0, y: y + 0, z: z },
+                { x: x + 1, y: y + 0, z: z },
+                { x: x + 0, y: y + 0, z: z + 1 },
+
+            ],
+            [
+
+                { x: x + 0, y: y + 1, z: z },
+                { x: x + 1, y: y + 1, z: z },
+                { x: x + 0, y: y + 1, z: z + 1 },
+
+            ],
+            [
+
+                { x: x + 0, y: y + 0, z: z + 1 },
+                { x: x + 0, y: y + 0, z: z + 0 },
+                { x: x + 0, y: y + 1, z: z + 0 },
+                { x: x + 0, y: y + 1, z: z + 1 },
+
+            ],
+            [
+
+                { x: x + 0, y: y + 1, z: z + 1 },
+                { x: x + 1, y: y + 1, z: z + 0 },
+                { x: x + 1, y: y + 0, z: z + 0 },
+                { x: x + 0, y: y + 0, z: z + 1 },
+
+            ]
+
+        ]
         this.faces = [
 
             [
@@ -833,6 +1042,12 @@ class Slope extends Iso {
 
         ]
 
+        this.faces.forEach(function (face, i) {
+
+            face.oface = this.ofaces[i];
+
+        }, this)
+
     }
 
     export(canvas) {
@@ -895,7 +1110,7 @@ class Slope extends Iso {
 
     sort() {
 
-        this.faces.forEach(function (face, i) {
+        this.faces.forEach(function (face) {
 
             let sum = { x: 0, y: 0, z: 0 };
 
