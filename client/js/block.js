@@ -210,8 +210,8 @@ class Block extends Phaser.Graphics {
 
             this.tiles.forEach(function (tile) {
 
-                tile.x = 300 / 4 * (1 - this.iso.scale) + this.center.x * 64 * (1 - this.iso.scale);
-                tile.y = 1200 / 4 * (1 - this.iso.scale) - 16 * this.iso.pre * (1 - this.iso.scale) + 16 * this.iso.pre * (1 - this.iso.scale) - 32 * (1 - this.iso.scale);
+                tile.x = 300 / 4 * (1 - this.iso.scale) + this.center.x * 64 * (1 - this.iso.scale) + global.point.x * (1 - this.iso.scale);
+                tile.y = 1200 / 4 * (1 - this.iso.scale) - 16 * this.iso.pre * (1 - this.iso.scale) + 16 * this.iso.pre * (1 - this.iso.scale) - 32 * (1 - this.iso.scale) + global.point.y * (1 - this.iso.scale);
 
             }, this)
 
