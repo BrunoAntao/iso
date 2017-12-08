@@ -38,6 +38,17 @@ class Slider extends Phaser.Graphics {
 
         document.getElementById("game").appendChild(this.slider);
 
+        this.zoom = document.createElement("INPUT");
+        this.zoom.setAttribute('type', 'range');
+        this.zoom.setAttribute('id', 'zoom');
+        this.zoom.setAttribute('min', 0);
+        this.zoom.setAttribute('max', 2);
+        this.zoom.setAttribute('step', 0.1);
+        this.zoom.setAttribute('value', 1);
+        this.zoom.style.position = 'absolute';
+
+        document.getElementById("game").appendChild(this.zoom);
+
         game.add.existing(this);
     }
 
@@ -145,6 +156,11 @@ class Slider extends Phaser.Graphics {
         this.slider.style.top = game.height * 3 / 4 + game.height / 8 + 'px';
         this.slider.style.left = game.width * 3 / 4 + game.width / 16 + 'px';
 
+        this.zoom.style.width = game.width / 8 + 'px';
+        this.zoom.style.top = game.height * 3 / 4 + game.height / 6 + 'px';
+        this.zoom.style.left = game.width * 3 / 4 + game.width / 16 + 'px';
+
+
         let items = this.items;
 
         game.input.mouse.mouseWheelCallback = function (e) {
@@ -236,7 +252,7 @@ class Item extends Phaser.Graphics {
 
     update() {
 
-        this.x = game.width * 3 / 4 + game.width / 8 - 300/ 4 - 32;
+        this.x = game.width * 3 / 4 + game.width / 8 - 300 / 4 - 32;
 
     }
 

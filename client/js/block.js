@@ -53,17 +53,6 @@ class Block extends Phaser.Graphics {
 
         let map = this;
 
-        game.input.keyboard.onDownCallback = function (e) {
-
-            switch (e.key) {
-
-                case '+': if (map.iso.scale < 2) { map.iso.scale += 0.1; } break;
-                case '-': if (map.iso.scale > 0.2) { map.iso.scale -= 0.1; } break;
-
-            }
-
-        }
-
         game.add.existing(this);
     }
 
@@ -164,6 +153,12 @@ class Block extends Phaser.Graphics {
             if (document.getElementById('range')) {
 
                 this.iso.pre = document.getElementById('range').value;
+
+            }
+
+            if (document.getElementById('zoom')) {
+
+                this.iso.scale = document.getElementById('zoom').value;
 
             }
 
