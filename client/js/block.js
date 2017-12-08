@@ -420,8 +420,8 @@ class Iso extends Phaser.Graphics {
 
                 if (!(tile instanceof Grid)) {
 
-                    tile.tiles.remove(tile);
-
+                    //tile.tiles.remove(tile);
+                    tile.move({x:1, y:0, z:0});
                 }
 
             }
@@ -448,10 +448,6 @@ class Iso extends Phaser.Graphics {
             this.iso.x += vector.x;
             this.iso.y += vector.y;
             this.iso.z += vector.z;
-
-            this.d.x += vector.x;
-            this.d.y += vector.y;
-            this.d.z += vector.z;
 
             if (this instanceof Tile) {
 
@@ -534,6 +530,10 @@ class Iso extends Phaser.Graphics {
                 this.pos.y = this.tiles.map.center.y + r * Math.sin(a);
 
             }
+
+            this.d.x += vector.x;
+            this.d.y += vector.y;
+            this.d.z += vector.z;
 
         }
 
