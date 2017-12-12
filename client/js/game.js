@@ -10,7 +10,7 @@ gameState = {
         game.stage.disableVisibilityChange = true;
         game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
 
-        global.active = { type: 'Tile', angle: 0 };
+        global.active = { type: 'Cube', angle: 0 , color:0xffffff};
         global.over = {x: 0, y: 0, z: 0};
         global.point = { x: 0, y: 0 };
         global.open = false;
@@ -203,7 +203,7 @@ gameState = {
 
                         if (map.points[x][y][z]) {
 
-                            global.map.tiles['add' + map.points[x][y][z].type](x, y, z, 0x000000, map.points[x][y][z].angle);
+                            global.map.tiles['add' + map.points[x][y][z].type](x, y, z, map.points[x][y][z].color, map.points[x][y][z].angle);
                             global.map.data.points[x][y][z] = map.points[x][y][z];
 
                         }

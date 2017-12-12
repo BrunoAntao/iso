@@ -342,7 +342,7 @@ class Tiles extends Phaser.Group {
         this.add(tile);
         if (this.active) {
 
-            this.map.data.points[x][y][z] = { type: 'Tile', angle: 0 };
+            this.map.data.points[x][y][z] = { type: 'Tile', angle: 0, color: color};
 
         }
     }
@@ -360,7 +360,7 @@ class Tiles extends Phaser.Group {
         this.add(cube);
         if (this.active) {
 
-            this.map.data.points[x][y][z] = { type: 'Cube', angle: 0 };
+            this.map.data.points[x][y][z] = { type: 'Cube', angle: 0, color: color};
 
         }
     }
@@ -380,7 +380,7 @@ class Tiles extends Phaser.Group {
         this.add(slope);
         if (this.active) {
 
-            this.map.data.points[x][y][z] = { type: 'Slope', angle: angle };
+            this.map.data.points[x][y][z] = { type: 'Slope', angle: angle, color: color};
 
         }
     }
@@ -400,7 +400,7 @@ class Tiles extends Phaser.Group {
         this.add(polygon);
         if (this.active) {
 
-            this.map.data.points[x][y][z] = { type: 'Polygon', angle: angle };
+            this.map.data.points[x][y][z] = { type: 'Polygon', angle: angle, color: color};
 
         }
     }
@@ -431,11 +431,11 @@ class Iso extends Phaser.Graphics {
 
                 if (tile instanceof Grid) {
 
-                    tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z, 0x000000, global.active.angle);
+                    tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z, global.active.color, global.active.angle);
 
                 } else {
 
-                    tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z + 1, 0x000000, global.active.angle);
+                    tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z + 1, global.active.color, global.active.angle);
 
                 }
 
