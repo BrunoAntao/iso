@@ -23,7 +23,29 @@ class Block extends Phaser.Graphics {
 
         }
 
-        this.tiles = new Tiles(this);
+        this.data = {
+
+            width: width,
+            length: length,
+            height: height,
+
+            points: []
+
+        }
+
+        for (let w = 0; w < width; w++) {
+
+            this.data.points[w] = [];
+
+            for (let l = 0; l < length; l++) {
+
+                this.data.points[w][l] = [];
+
+            }
+
+        }
+
+        this.tiles = new Tiles(this, true);
 
         for (let x = 0; x < width; x++) {
 
@@ -39,19 +61,18 @@ class Block extends Phaser.Graphics {
         this.tiles.addCube(0, 9, 0, 0xff0000);
         this.tiles.addCube(9, 0, 0, 0xff0000);
         this.tiles.addCube(9, 9, 0, 0xff0000);
-        this.tiles.addSlope(0, 1, 0, -Math.PI / 2, 0xff0000);
-        this.tiles.addSlope(1, 0, 0, 0, 0xff0000);
 
-        this.tiles.addSlope(9, 1, 0, -Math.PI / 2, 0xff0000);
-        this.tiles.addSlope(8, 0, 0, Math.PI, 0xff0000);
+        this.tiles.addSlope(0, 1, 0, 0xff0000, -Math.PI / 2);
+        this.tiles.addSlope(1, 0, 0, 0xff0000, 0);
 
-        this.tiles.addSlope(0, 8, 0, Math.PI / 2, 0xff0000);
-        this.tiles.addSlope(1, 9, 0, 0, 0xff0000);
+        this.tiles.addSlope(9, 1, 0, 0xff0000, -Math.PI / 2);
+        this.tiles.addSlope(8, 0, 0, 0xff0000, Math.PI);
 
-        this.tiles.addSlope(9, 8, 0, Math.PI / 2, 0xff0000);
-        this.tiles.addSlope(8, 9, 0, Math.PI, 0xff0000);
+        this.tiles.addSlope(0, 8, 0, 0xff0000, Math.PI / 2);
+        this.tiles.addSlope(1, 9, 0, 0xff0000, 0);
 
-        let map = this;
+        this.tiles.addSlope(9, 8, 0, 0xff0000, Math.PI / 2);
+        this.tiles.addSlope(8, 9, 0, 0xff0000, Math.PI);
 
         game.add.existing(this);
     }
@@ -91,30 +112,7 @@ class Block extends Phaser.Graphics {
 
             }, this)
 
-        }
-
-        if (tile instanceof Cube) {
-
-            tile.faces.forEach(function (face) {
-
-                face.forEach(function (point) {
-
-                    let dx = point.x - this.center.x;
-                    let dy = point.y - this.center.y;
-
-                    let r = Math.sqrt(dx * dx + dy * dy);
-                    let a = Math.atan2(dy, dx) - angle;
-
-                    point.x = this.center.x + r * Math.cos(a);
-                    point.y = this.center.y + r * Math.sin(a);
-
-                }, this)
-
-            }, this)
-
-        }
-
-        if (tile instanceof Slope) {
+        } else {
 
             tile.faces.forEach(function (face) {
 
@@ -217,9 +215,10 @@ class Block extends Phaser.Graphics {
 }
 class Tiles extends Phaser.Group {
 
-    constructor(parent) {
+    constructor(parent, active = false) {
 
         super(game);
+        this.active = active;
         this.map = parent;
 
     }
@@ -341,6 +340,11 @@ class Tiles extends Phaser.Group {
         }
 
         this.add(tile);
+        if (this.active) {
+
+            this.map.data.points[x][y][z] = { type: 'Tile', angle: 0 };
+
+        }
     }
 
     addCube(x, y, z, color = 0x000000) {
@@ -354,10 +358,14 @@ class Tiles extends Phaser.Group {
         }
 
         this.add(cube);
+        if (this.active) {
 
+            this.map.data.points[x][y][z] = { type: 'Cube', angle: 0 };
+
+        }
     }
 
-    addSlope(x, y, z, angle = 0, color = 0x000000) {
+    addSlope(x, y, z, color = 0x000000, angle = 0) {
 
         let slope = new Slope(x, y, z, angle, color, this);
 
@@ -370,6 +378,37 @@ class Tiles extends Phaser.Group {
         }
 
         this.add(slope);
+        if (this.active) {
+
+            this.map.data.points[x][y][z] = { type: 'Slope', angle: angle };
+
+        }
+    }
+
+    addPolygon(x, y, z, faces, color = 0x000000, angle = 0) {
+
+        let polygon = new Polygon(x, y, z, faces, angle, color, this);
+
+        this.slopeRotate(polygon, angle);
+
+        if (this.map) {
+
+            this.rotate({ x: this.map.center.x, y: this.map.center.y }, polygon, this.map.iso.worldAngle);
+
+        }
+
+        this.add(polygon);
+        if (this.active) {
+
+            this.map.data.points[x][y][z] = { type: 'Polygon', angle: angle };
+
+        }
+    }
+
+    remove(tile) {
+
+        super.remove(tile);
+        this.map.data.points[tile.iso.x][tile.iso.y][tile.iso.z] = null;
 
     }
 
@@ -390,29 +429,13 @@ class Iso extends Phaser.Graphics {
 
             if (game.input.activePointer.leftButton.isDown) {
 
-                if (!(tile instanceof Grid)) {
+                if (tile instanceof Grid) {
 
-                    if (global.active.type != 'Slope') {
-
-                        tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z + 1);
-
-                    } else {
-
-                        tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z + 1, global.active.angle);
-
-                    }
+                    tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z, 0x000000, global.active.angle);
 
                 } else {
 
-                    if (global.active.type != 'Slope') {
-
-                        tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z);
-
-                    } else {
-
-                        tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z, global.active.angle);
-
-                    }
+                    tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z + 1, 0x000000, global.active.angle);
 
                 }
 
@@ -420,8 +443,8 @@ class Iso extends Phaser.Graphics {
 
                 if (!(tile instanceof Grid)) {
 
-                    //tile.tiles.remove(tile);
-                    tile.move({x:1, y:0, z:0});
+                    tile.tiles.remove(tile);
+
                 }
 
             }
@@ -430,6 +453,7 @@ class Iso extends Phaser.Graphics {
         this.events.onInputOver.add(function (tile) {
 
             tile.tint = 0xaaaaaa;
+            global.over = {x: tile.iso.x, y: tile.iso.y, z: tile.iso.z};
 
         })
         this.events.onInputOut.add(function (tile) {
@@ -994,6 +1018,133 @@ class Slope extends Iso {
             ]
 
         ]
+
+        this.faces.forEach(function (face, i) {
+
+            face.oface = this.ofaces[i];
+
+        }, this)
+
+    }
+
+    export(canvas) {
+
+        canvas.clear();
+
+        this.faces.forEach(function (face) {
+
+            canvas.beginFill(this.color);
+
+            canvas.lineStyle(1, 0xffffff, 1);
+
+            canvas.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32,
+                1200 / 4 - face[0].y * 16 * this.tiles.map.iso.pre + face[0].x * 16 * this.tiles.map.iso.pre - face[0].z * 32);
+
+            face.forEach(function (point) {
+
+                canvas.lineTo(300 / 4 + point.x * 32 + point.y * 32,
+                    1200 / 4 - point.y * 16 * this.tiles.map.iso.pre + point.x * 16 * this.tiles.map.iso.pre - point.z * 32);
+
+            }, this)
+
+            canvas.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32,
+                1200 / 4 - face[0].y * 16 * this.tiles.map.iso.pre + face[0].x * 16 * this.tiles.map.iso.pre - face[0].z * 32);
+
+            canvas.endFill();
+
+        }, this)
+
+    }
+
+    draw() {
+
+        this.clear();
+
+        this.faces.forEach(function (face) {
+
+            this.beginFill(this.color);
+
+            this.lineStyle(1, 0xffffff, 1);
+
+            this.moveTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
+                1200 / 4 - face[0].y * 16 * this.tiles.map.iso.pre + face[0].x * 16 * this.tiles.map.iso.pre - face[0].z * 32 + global.point.y);
+
+            face.forEach(function (point) {
+
+                this.lineTo(300 / 4 + point.x * 32 + point.y * 32 + global.point.x,
+                    1200 / 4 - point.y * 16 * this.tiles.map.iso.pre + point.x * 16 * this.tiles.map.iso.pre - point.z * 32 + global.point.y);
+
+            }, this)
+
+            this.lineTo(300 / 4 + face[0].x * 32 + face[0].y * 32 + global.point.x,
+                1200 / 4 - face[0].y * 16 * this.tiles.map.iso.pre + face[0].x * 16 * this.tiles.map.iso.pre - face[0].z * 32 + global.point.y);
+
+            this.endFill();
+
+        }, this)
+
+    }
+
+    sort() {
+
+        this.faces.forEach(function (face) {
+
+            let sum = { x: 0, y: 0, z: 0 };
+
+            face.forEach(function (point) {
+
+                sum.x += point.x / face.length;
+                sum.y += point.y / face.length;
+                sum.z += point.z / face.length;
+
+            })
+
+            face.sum = sum;
+
+        })
+
+        this.faces.sort(function (a, b) {
+
+            return b.sum.y - a.sum.y + a.sum.x - b.sum.x + a.sum.z - b.sum.z;
+
+        })
+
+    }
+
+}
+class Polygon extends Iso {
+
+    constructor(x, y, z, faces, angle, color, parent) {
+
+        super(x, y, z, parent);
+
+        this.color = color;
+        this.block = 'Slope';
+        this.fangle = angle;
+        this.faces = [];
+        this.ofaces = [];
+        this.d = { x: 0, y: 0, z: 0 };
+
+        faces.forEach(function (face, a) {
+
+            this.faces[a] = [];
+            this.ofaces[a] = [];
+
+            face.forEach(function (point, b) {
+
+                this.faces[a][b] = {};
+                this.faces[a][b].x = point.x + x;
+                this.faces[a][b].y = point.y + y;
+                this.faces[a][b].z = point.z + z;
+
+                this.ofaces[a][b] = {};
+                this.ofaces[a][b].x = point.x + x;
+                this.ofaces[a][b].y = point.y + y;
+                this.ofaces[a][b].z = point.z + z;
+
+            }, this)
+
+        }, this)
 
         this.faces.forEach(function (face, i) {
 

@@ -75,7 +75,8 @@ class SelectList {
 
                 elem.text.parentNode.removeChild(elem.text);
                 elem.parent.destroy();
-                game.input.keyboard.onDownCallback = global.map.inputs;
+                game.input.keyboard.onDownCallback = global.inputs;
+                global.open = false;
 
             }
 
@@ -124,7 +125,8 @@ class TextBox {
 
                 elem.text.parentNode.removeChild(elem.text);
                 elem.parent.destroy();
-                game.input.keyboard.onDownCallback = global.map.inputs;
+                game.input.keyboard.onDownCallback = global.inputs;
+                global.open = false;
 
             }
 
