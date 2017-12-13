@@ -435,6 +435,22 @@ class Iso extends Phaser.Graphics {
 
                 } else {
 
+                    if(tile.tiles.map.data.points[tile.iso.x][tile.iso.y][tile.iso.z + 1]) {
+
+                        let remove = tile;
+
+                        tile.tiles.forEach(function (tile) {
+
+                            if(tile.iso.x == remove.iso.x && tile.iso.y == remove.iso.y && tile.iso.z == remove.iso.z + 1) {
+
+                                tile.tiles.remove(tile);
+
+                            }
+
+                        })
+
+                    }
+
                     tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z + 1, global.active.color, global.active.angle);
 
                 }
