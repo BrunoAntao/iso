@@ -30,8 +30,18 @@ class Slider extends Phaser.Graphics {
             return hex.length == 1 ? "0" + hex : hex;
         }
 
-        this.rgb = function(r, g, b) {
+        this.rgb = function (r, g, b) {
             return "0x" + this.cHex(r) + this.cHex(g) + this.cHex(b);
+        }
+
+        this.hexToRgb = function (hex) {
+
+            var arrBuff = new ArrayBuffer(4);
+            var vw = new DataView(arrBuff);
+            vw.setUint32(0, parseInt(hex, 16), false);
+            var arrByte = new Uint8Array(arrBuff);
+
+            return { r: arrByte[1], g: arrByte[2], b: arrByte[3] };
         }
 
         let div = document.getElementById('game');

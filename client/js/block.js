@@ -51,28 +51,28 @@ class Block extends Phaser.Graphics {
 
             for (let y = 0; y < length; y++) {
 
-                this.tiles.addGrid(x, y, 0, 0x212121);
+                this.tiles.addGrid(x, y, 0, '0x212121');
 
             }
 
         }
 
-        this.tiles.addCube(0, 0, 0, 0xff0000);
-        this.tiles.addCube(0, 9, 0, 0xff0000);
-        this.tiles.addCube(9, 0, 0, 0xff0000);
-        this.tiles.addCube(9, 9, 0, 0xff0000);
+        this.tiles.addCube(0, 0, 0, '0xff0000');
+        this.tiles.addCube(0, 9, 0, '0xff0000');
+        this.tiles.addCube(9, 0, 0, '0xff0000');
+        this.tiles.addCube(9, 9, 0, '0xff0000');
 
-        this.tiles.addSlope(0, 1, 0, 0xff0000, -Math.PI / 2);
-        this.tiles.addSlope(1, 0, 0, 0xff0000, 0);
+        this.tiles.addSlope(0, 1, 0, '0xff0000', -Math.PI / 2);
+        this.tiles.addSlope(1, 0, 0, '0xff0000', 0);
 
-        this.tiles.addSlope(9, 1, 0, 0xff0000, -Math.PI / 2);
-        this.tiles.addSlope(8, 0, 0, 0xff0000, Math.PI);
+        this.tiles.addSlope(9, 1, 0, '0xff0000', -Math.PI / 2);
+        this.tiles.addSlope(8, 0, 0, '0xff0000', Math.PI);
 
-        this.tiles.addSlope(0, 8, 0, 0xff0000, Math.PI / 2);
-        this.tiles.addSlope(1, 9, 0, 0xff0000, 0);
+        this.tiles.addSlope(0, 8, 0, '0xff0000', Math.PI / 2);
+        this.tiles.addSlope(1, 9, 0, '0xff0000', 0);
 
-        this.tiles.addSlope(9, 8, 0, 0xff0000, Math.PI / 2);
-        this.tiles.addSlope(8, 9, 0, 0xff0000, Math.PI);
+        this.tiles.addSlope(9, 8, 0, '0xff0000', Math.PI / 2);
+        this.tiles.addSlope(8, 9, 0, '0xff0000', Math.PI);
 
         game.add.existing(this);
     }
@@ -453,7 +453,7 @@ class Iso extends Phaser.Graphics {
         this.events.onInputOver.add(function (tile) {
 
             tile.tint = 0xaaaaaa;
-            global.over = {x: tile.iso.x, y: tile.iso.y, z: tile.iso.z};
+            global.over = tile;
 
         })
         this.events.onInputOut.add(function (tile) {

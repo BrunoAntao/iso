@@ -10,8 +10,8 @@ gameState = {
         game.stage.disableVisibilityChange = true;
         game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
 
-        global.active = { type: 'Cube', angle: 0 , color:0xffffff};
-        global.over = {x: 0, y: 0, z: 0};
+        global.active = { type: 'Cube', angle: 0, color: 0xffffff };
+        global.over = { x: 0, y: 0, z: 0 };
         global.point = { x: 0, y: 0 };
         global.open = false;
         global.hiddingX = false;
@@ -31,7 +31,7 @@ gameState = {
         items.addSlope(0, 0, -8, 0x000000, -Math.PI / 2);
         items.addSlope(0, 0, -10, 0x000000, Math.PI / 2);
 
-        new Slider(items);
+        let slider = new Slider(items);
 
         hideX = function (x) {
 
@@ -172,6 +172,16 @@ gameState = {
 
         }
 
+        copyColor = function () {
+
+            console.log(global.over.color);
+            let color = slider.hexToRgb(global.over.color);
+            slider.red.value = color.r;
+            slider.green.value = color.g;
+            slider.blue.value = color.b;
+
+        }
+
         socket.on('maplist', function (maplist) {
 
             let panel = new Panel(128, 64)
@@ -230,8 +240,9 @@ gameState = {
 
                 switch (e.key) {
 
-                    case 'q': hideX(global.over.x); break;
-                    case 'e': hideY(global.over.y); break;
+                    case 'q': hideX(global.over.iso.x); break;
+                    case 'e': hideY(global.over.iso.y); break;
+                    case 'c': copyColor(); break;
 
                 }
 
