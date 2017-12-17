@@ -227,21 +227,25 @@ gameState = {
 
         global.inputs = function (e) {
 
-            switch (e.key) {
-
-                case 'r': clear(); break;
-                case 's': if (!global.open) { save(); } break;
-                case 'l': if (!global.open) { load(); } break;
-
-            }
-
-            if (global.over) {
+            if (!game.focus) {
 
                 switch (e.key) {
 
-                    case 'q': hideX(global.over.iso.x); break;
-                    case 'e': hideY(global.over.iso.y); break;
-                    case 'c': copyColor(); break;
+                    case 'r': clear(); break;
+                    case 's': if (!global.open) { save(); } break;
+                    case 'l': if (!global.open) { load(); } break;
+
+                }
+
+                if (global.over) {
+
+                    switch (e.key) {
+
+                        case 'q': hideX(global.over.iso.x); break;
+                        case 'e': hideY(global.over.iso.y); break;
+                        case 'c': copyColor(); break;
+
+                    }
 
                 }
 
