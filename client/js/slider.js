@@ -101,6 +101,35 @@ class Slider extends Phaser.Graphics {
 
         document.getElementById("game").appendChild(this.blue);
 
+        this.color = document.createElement("INPUT");
+        this.color.setAttribute('id', 'color');
+        this.color.style.position = 'absolute';
+        let slider = this;
+        this.color.onfocus = function (e) {
+
+            game.focus = true;
+
+        }
+        this.color.onblur = function () {
+
+            game.focus = false;
+
+        }
+        this.color.addEventListener('keydown', function (e) {
+
+            if (e.key == 'Enter') {
+
+                let color = slider.hexToRgb(this.value);
+                slider.red.value = color.r;
+                slider.green.value = color.g;
+                slider.blue.value = color.b;
+
+            }
+
+        })
+
+        document.getElementById("game").appendChild(this.color);
+
         game.add.existing(this);
     }
 
@@ -221,6 +250,16 @@ class Slider extends Phaser.Graphics {
         this.blue.style.width = game.width / 8 + 'px';
         this.blue.style.top = game.height * 3 / 4 + game.height / 16 + 'px';
         this.blue.style.left = game.width * 3 / 4 + game.width / 16 + 'px';
+
+        this.color.style.width = game.width / 8 + 'px';
+        this.color.style.top = game.height * 3 / 4 - game.height / 16 + 'px';
+        this.color.style.left = game.width * 3 / 4 + game.width / 16 + 'px';
+
+        if (!game.focus) {
+
+            this.color.value = this.rgb(parseInt(this.red.value), parseInt(this.green.value), parseInt(this.blue.value));
+
+        }
 
         let items = this.items;
 

@@ -174,7 +174,6 @@ gameState = {
 
         copyColor = function () {
 
-            console.log(global.over.color);
             let color = slider.hexToRgb(global.over.color);
             slider.red.value = color.r;
             slider.green.value = color.g;
