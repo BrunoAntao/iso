@@ -427,6 +427,9 @@ class Iso extends Phaser.Graphics {
         this.inputEnabled = true;
         this.events.onInputDown.add(function (tile) {
 
+            game.focus = false;
+            document.getElementById('color').blur();
+
             if (game.input.activePointer.leftButton.isDown) {
 
                 if (tile instanceof Grid) {
