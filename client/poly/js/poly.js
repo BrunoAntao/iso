@@ -54,7 +54,25 @@ class PolyEdit extends Phaser.Graphics {
             switch (e.key) {
 
                 case 'f': map.selected = []; break;
-                case 'Enter': if (map.selected.length > 1) { map.faces.addFace(Object.assign([], map.selected)); map.selected = []; } break;
+                case 'Enter': if (map.selected.length > 1) {
+                    map.faces.addFace(Object.assign([], map.selected)); map.selected = [];
+
+                    map.faces.forEach(function (face) {
+
+                        if (face instanceof Points) {
+
+                            face.points.forEach(function (point) {
+
+                                point.color = 0x000000;
+                                point.selected = false;
+
+                            })
+
+                        }
+
+                    })
+
+                } break;
                 case 's':
 
                     let data = [];
@@ -347,11 +365,25 @@ class Point extends Phaser.Graphics {
         super(game, 0, 0);
 
         this.iso = { x: x, y: y, z: z, scale: 1 };
+        this.color = 0x000000;
+        this.selected = false;
 
         this.inputEnabled = true;
-        this.events.onInputDown.add(function () {
+        this.events.onInputDown.add(function (point) {
 
-            global.map.selected.push(this);
+            if (!point.selected) {
+
+                global.map.selected.push(point);
+                point.selected = true;
+                point.color = 0xffffff;
+
+            } else {
+
+                global.map.selected.splice(global.map.selected.indexOf(point), 1);
+                point.selected = false;
+                point.color = 0x000000;
+
+            }
 
 
         }, this);
@@ -373,7 +405,7 @@ class Point extends Phaser.Graphics {
 
         this.clear();
 
-        this.beginFill(0x000000, 1);
+        this.beginFill(this.color, 1);
         this.lineStyle(1, 0xffffff, 1);
 
         let pos = global.map.isoTo2d(this.iso);
