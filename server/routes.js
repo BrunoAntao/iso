@@ -6,4 +6,10 @@ module.exports = function(app, map) {
 
     });
 
+    app.get('/poly', function(req, res) {
+
+        res.render('poly.ejs');
+
+    });
+
 };

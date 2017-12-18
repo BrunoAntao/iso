@@ -57,23 +57,6 @@ class Block extends Phaser.Graphics {
 
         }
 
-        this.tiles.addCube(0, 0, 0, '0xff0000');
-        this.tiles.addCube(0, 9, 0, '0xff0000');
-        this.tiles.addCube(9, 0, 0, '0xff0000');
-        this.tiles.addCube(9, 9, 0, '0xff0000');
-
-        this.tiles.addSlope(0, 1, 0, '0xff0000', -Math.PI / 2);
-        this.tiles.addSlope(1, 0, 0, '0xff0000', 0);
-
-        this.tiles.addSlope(9, 1, 0, '0xff0000', -Math.PI / 2);
-        this.tiles.addSlope(8, 0, 0, '0xff0000', Math.PI);
-
-        this.tiles.addSlope(0, 8, 0, '0xff0000', Math.PI / 2);
-        this.tiles.addSlope(1, 9, 0, '0xff0000', 0);
-
-        this.tiles.addSlope(9, 8, 0, '0xff0000', Math.PI / 2);
-        this.tiles.addSlope(8, 9, 0, '0xff0000', Math.PI);
-
         game.add.existing(this);
     }
 
