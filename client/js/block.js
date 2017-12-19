@@ -405,7 +405,7 @@ class Iso extends Phaser.Graphics {
 
                     }
 
-                } else {
+                } else if(tile.iso.z + 1 < tile.tiles.map.data.height){
 
                     if (tile.tiles.map.data.points[tile.iso.x][tile.iso.y][tile.iso.z + 1]) {
 
