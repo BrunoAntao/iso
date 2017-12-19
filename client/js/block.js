@@ -423,7 +423,15 @@ class Iso extends Phaser.Graphics {
 
                     }
 
-                    tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z + 1, global.active.color, global.active.angle);
+                    if (tile.tiles['add' + global.active.type]) {
+
+                        tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z + 1, global.active.color, global.active.angle);
+
+                    } else {
+
+                        tile.tiles['addPolygon'](tile.iso.x, tile.iso.y, tile.iso.z + 1, global.active.type, global.poly[global.active.type].faces, global.active.color, global.active.angle);
+
+                    }
 
                 }
 
