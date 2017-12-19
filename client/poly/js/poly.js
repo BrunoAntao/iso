@@ -45,11 +45,13 @@ class PolyEdit extends Phaser.Graphics {
             new Point(0, 0.5, 0.5),
             new Point(1, 0.5, 0.5),
 
+            new Point(0.5, 0.5, 0.5),
+
         ]);
 
         let map = this;
 
-        game.input.keyboard.onDownCallback = function (e) {
+        global.inputs = function (e) {
 
             switch (e.key) {
 
@@ -85,7 +87,14 @@ class PolyEdit extends Phaser.Graphics {
 
                             face.points.forEach(function (point) {
 
-                                facep.push(point);
+                                let pointp = {};
+
+                                pointp.x = point.pos.x;
+                                pointp.y = point.pos.y;
+                                pointp.z = point.pos.z;
+
+                                facep.push(pointp);
+
 
                             })
 
@@ -95,12 +104,29 @@ class PolyEdit extends Phaser.Graphics {
 
                     })
 
-                    console.log(data);
+                    global.open = true;
+
+                    let panel = new Panel(128, 64);
+                    panel.add(new TextBox(panel.w, panel.h,
+
+                        function (elem) {
+
+                            socket.emit('save poly', { faces: data, name: elem.text.value });
+                            global.open = false;
+                            game.input.keyboard.onDownCallback = global.inputs;
+
+                        },
+
+                        'Enter'
+
+                    ));
                     break;
 
             }
 
         }
+
+        game.input.keyboard.onDownCallback = global.inputs;
 
         this.slider = document.createElement("INPUT");
         this.slider.setAttribute('type', 'range');
@@ -365,6 +391,7 @@ class Point extends Phaser.Graphics {
         super(game, 0, 0);
 
         this.iso = { x: x, y: y, z: z, scale: 1 };
+        this.pos = { x: x, y: y, z: z };
         this.color = 0x000000;
         this.selected = false;
 

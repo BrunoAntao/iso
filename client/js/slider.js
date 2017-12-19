@@ -168,30 +168,7 @@ class Slider extends Phaser.Graphics {
 
             }, this)
 
-        }
-
-        if (tile instanceof Cube) {
-
-            tile.faces.forEach(function (face) {
-
-                face.forEach(function (point) {
-
-                    let dx = point.x - 0.5;
-                    let dy = point.y - 0.5;
-
-                    let r = Math.sqrt(dx * dx + dy * dy);
-                    let a = Math.atan2(dy, dx) - angle;
-
-                    point.x = 0.5 + r * Math.cos(a);
-                    point.y = 0.5 + r * Math.sin(a);
-
-                }, this)
-
-            }, this)
-
-        }
-
-        if (tile instanceof Slope) {
+        } else {
 
             tile.faces.forEach(function (face) {
 

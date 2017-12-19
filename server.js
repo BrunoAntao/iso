@@ -29,6 +29,14 @@ http.listen(port, function () {
 
         });
 
+        socket.on('save poly', function (data) {
+
+            console.log('User ' + socket.id + ': saved poly');
+
+            fs.writeFileSync('./server/poly/' + data.name + '.json', JSON.stringify(data.faces));
+
+        });
+
         socket.on('fetch maplist', function () {
 
             console.log('User ' + socket.id + ': fetched maplist');
@@ -46,6 +54,25 @@ http.listen(port, function () {
             let map = JSON.parse(fs.readFileSync('./server/maps/' + name));
 
             socket.emit('map', map);
+
+        });
+
+        socket.on('fetch poly', function () {
+
+            console.log('User ' + socket.id + ': fetched poly');
+
+            let polyList = fs.readdirSync('./server/poly');
+
+            let pols = [];
+
+            polyList.forEach(function (poly) {
+
+                let p = JSON.parse(fs.readFileSync('./server/poly/' + poly));
+                pols.push({name:poly.substr(0, poly.length-5), faces:p});
+
+            })
+
+            socket.emit('poly', pols);
 
         });
 

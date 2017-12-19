@@ -16,6 +16,7 @@ gameState = {
         global.open = false;
         global.hiddingX = false;
         global.hiddingY = false;
+        global.poly = [];
 
         let width = 10;
         let length = 10;
@@ -31,191 +32,55 @@ gameState = {
         items.addSlope(0, 0, -8, 0x000000, -Math.PI / 2);
         items.addSlope(0, 0, -10, 0x000000, Math.PI / 2);
 
-        let slider = new Slider(items);
+        let i = -12;
 
-        hideX = function (x) {
+        socket.emit('fetch poly');
 
-            if (!global.hiddingY) {
+        socket.on('poly', function (polyList) {
 
-                if (global.hiddingX) {
+            polyList.forEach(function (poly) {
 
-                    global.hiddingX = false;
+                items.addPolygon(0, 0, i, poly.name, poly.faces);
+                global.poly[poly.name] = poly;
+                i -= 2;
 
-                    global.map.tiles.forEach(function (tile) {
+            })
 
-                        if (tile.iso.x != x) {
+            let slider = new Slider(items);
 
-                            tile.alpha = 1;
-                            tile.inputEnabled = true;
+            hideX = function (x) {
 
-                        }
+                if (!global.hiddingY) {
 
-                    })
+                    if (global.hiddingX) {
 
-                } else {
+                        global.hiddingX = false;
 
-                    global.hiddingX = true;
+                        global.map.tiles.forEach(function (tile) {
 
-                    global.map.tiles.forEach(function (tile) {
+                            if (tile.iso.x != x) {
 
-                        if (tile.iso.x != x) {
+                                tile.alpha = 1;
+                                tile.inputEnabled = true;
 
-                            tile.alpha = 0.2;
-                            tile.inputEnabled = false;
+                            }
 
-                        }
+                        })
 
-                    }, this)
+                    } else {
 
-                }
+                        global.hiddingX = true;
 
-            }
+                        global.map.tiles.forEach(function (tile) {
 
-        }
+                            if (tile.iso.x != x) {
 
-        hideY = function (y) {
+                                tile.alpha = 0.2;
+                                tile.inputEnabled = false;
 
-            if (!global.hiddingX) {
+                            }
 
-                if (global.hiddingY) {
-
-                    global.hiddingY = false;
-
-                    global.map.tiles.forEach(function (tile) {
-
-                        if (tile.iso.y != y) {
-
-                            tile.alpha = 1;
-                            tile.inputEnabled = true;
-
-                        }
-
-                    })
-
-                } else {
-
-                    global.hiddingY = true;
-
-                    global.map.tiles.forEach(function (tile) {
-
-                        if (tile.iso.y != y) {
-
-                            tile.alpha = 0.2;
-                            tile.inputEnabled = false;
-
-                        }
-
-                    }, this)
-
-                }
-
-            }
-
-        }
-
-        clear = function () {
-
-            global.map.tiles.forEach(function (tile) {
-
-                if (!(tile instanceof Grid)) {
-
-                    tile.kill();
-
-                } else {
-
-                    tile.tint = 0xffffff;
-
-                }
-
-            });
-
-            for (let x = 0; x < global.map.data.width; x++) {
-
-                global.map.data.points[x] = new Array(global.map.data.length);
-
-                for (let y = 0; y < global.map.data.length; y++) {
-
-                    global.map.data.points[x][y] = new Array(global.map.data.height);
-
-                }
-
-            }
-
-        }
-
-        save = function () {
-
-            global.open = true;
-
-            let panel = new Panel(128, 64);
-            panel.add(new TextBox(panel.w, panel.h,
-
-                function (elem) {
-
-                    socket.emit('save map', { map: global.map.data, name: elem.text.value });
-                    global.open = false;
-                    game.input.keyboard.onDownCallback = global.inputs;
-
-                },
-
-                'Enter'
-
-            ));
-
-        }
-
-        load = function () {
-
-            global.open = true;
-
-            socket.emit('fetch maplist', global.map.data);
-
-        }
-
-        copyColor = function () {
-
-            let color = slider.hexToRgb(global.over.color);
-            slider.red.value = color.r;
-            slider.green.value = color.g;
-            slider.blue.value = color.b;
-
-        }
-
-        socket.on('maplist', function (maplist) {
-
-            let panel = new Panel(128, 64)
-            panel.add(new SelectList(panel.w, panel.h, maplist,
-
-                function (elem) {
-
-                    socket.emit('fetch map', elem.text.options[elem.text.selectedIndex].value);
-                    global.open = false;
-                    game.input.keyboard.onDownCallback = global.inputs;
-
-                },
-
-                'Enter'
-
-            ));
-
-        })
-
-        socket.on('map', function (map) {
-
-            clear();
-
-            for (let x = 0; x < map.width; x++) {
-
-                for (let y = 0; y < map.length; y++) {
-
-                    for (let z = 0; z < map.height; z++) {
-
-                        if (map.points[x][y][z]) {
-
-                            global.map.tiles['add' + map.points[x][y][z].type](x, y, z, map.points[x][y][z].color, map.points[x][y][z].angle);
-                            global.map.data.points[x][y][z] = map.points[x][y][z];
-
-                        }
+                        }, this)
 
                     }
 
@@ -223,27 +88,192 @@ gameState = {
 
             }
 
-        })
+            hideY = function (y) {
 
-        global.inputs = function (e) {
+                if (!global.hiddingX) {
 
-            if (!game.focus) {
+                    if (global.hiddingY) {
 
-                switch (e.key) {
+                        global.hiddingY = false;
 
-                    case 'r': clear(); break;
-                    case 's': if (!global.open) { save(); } break;
-                    case 'l': if (!global.open) { load(); } break;
+                        global.map.tiles.forEach(function (tile) {
+
+                            if (tile.iso.y != y) {
+
+                                tile.alpha = 1;
+                                tile.inputEnabled = true;
+
+                            }
+
+                        })
+
+                    } else {
+
+                        global.hiddingY = true;
+
+                        global.map.tiles.forEach(function (tile) {
+
+                            if (tile.iso.y != y) {
+
+                                tile.alpha = 0.2;
+                                tile.inputEnabled = false;
+
+                            }
+
+                        }, this)
+
+                    }
 
                 }
 
-                if (global.over) {
+            }
+
+            clear = function () {
+
+                global.map.tiles.forEach(function (tile) {
+
+                    if (!(tile instanceof Grid)) {
+
+                        tile.kill();
+
+                    } else {
+
+                        tile.tint = 0xffffff;
+
+                    }
+
+                });
+
+                for (let x = 0; x < global.map.data.width; x++) {
+
+                    global.map.data.points[x] = new Array(global.map.data.length);
+
+                    for (let y = 0; y < global.map.data.length; y++) {
+
+                        global.map.data.points[x][y] = new Array(global.map.data.height);
+
+                    }
+
+                }
+
+            }
+
+            save = function () {
+
+                global.open = true;
+
+                let panel = new Panel(128, 64);
+                panel.add(new TextBox(panel.w, panel.h,
+
+                    function (elem) {
+
+                        socket.emit('save map', { map: global.map.data, name: elem.text.value });
+                        global.open = false;
+                        game.input.keyboard.onDownCallback = global.inputs;
+
+                    },
+
+                    'Enter'
+
+                ));
+
+            }
+
+            load = function () {
+
+                global.open = true;
+
+                socket.emit('fetch maplist', global.map.data);
+
+            }
+
+            copyColor = function () {
+
+                let color = slider.hexToRgb(global.over.color);
+                slider.red.value = color.r;
+                slider.green.value = color.g;
+                slider.blue.value = color.b;
+
+            }
+
+            socket.on('maplist', function (maplist) {
+
+                let panel = new Panel(128, 64)
+                panel.add(new SelectList(panel.w, panel.h, maplist,
+
+                    function (elem) {
+
+                        socket.emit('fetch map', elem.text.options[elem.text.selectedIndex].value);
+                        global.open = false;
+                        game.input.keyboard.onDownCallback = global.inputs;
+
+                    },
+
+                    'Enter'
+
+                ));
+
+            })
+
+            socket.on('map', function (map) {
+
+                clear();
+
+                for (let x = 0; x < map.width; x++) {
+
+                    for (let y = 0; y < map.length; y++) {
+
+                        for (let z = 0; z < map.height; z++) {
+
+                            if (map.points[x][y][z]) {
+
+                                if (global.map.tiles['add' + map.points[x][y][z].type]) {
+
+                                    global.map.tiles['add' + map.points[x][y][z].type](x, y, z, map.points[x][y][z].color, map.points[x][y][z].angle);
+
+                                } else if(global.poly[map.points[x][y][z].type]) {
+
+                                    global.map.tiles['addPolygon'](x, y, z, map.points[x][y][z].type, global.poly[map.points[x][y][z].type].faces, map.points[x][y][z].color, map.points[x][y][z].angle);
+
+                                } else {
+
+                                    console.log('invalid poly');
+
+                                }
+
+                                global.map.data.points[x][y][z] = map.points[x][y][z];
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            })
+
+            global.inputs = function (e) {
+
+                if (!game.focus) {
 
                     switch (e.key) {
 
-                        case 'q': hideX(global.over.iso.x); break;
-                        case 'e': hideY(global.over.iso.y); break;
-                        case 'c': copyColor(); break;
+                        case 'r': clear(); break;
+                        case 's': if (!global.open) { save(); } break;
+                        case 'l': if (!global.open) { load(); } break;
+
+                    }
+
+                    if (global.over) {
+
+                        switch (e.key) {
+
+                            case 'q': hideX(global.over.iso.x); break;
+                            case 'e': hideY(global.over.iso.y); break;
+                            case 'c': copyColor(); break;
+
+                        }
 
                     }
 
@@ -251,9 +281,9 @@ gameState = {
 
             }
 
-        }
+            game.input.keyboard.onDownCallback = global.inputs;
 
-        game.input.keyboard.onDownCallback = global.inputs;
+        })
 
     },
 

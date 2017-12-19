@@ -223,30 +223,7 @@ class Tiles extends Phaser.Group {
 
             }, this)
 
-        }
-
-        if (tile instanceof Cube) {
-
-            tile.faces.forEach(function (face) {
-
-                face.forEach(function (point) {
-
-                    let dx = point.x - center.x;
-                    let dy = point.y - center.y;
-
-                    let r = Math.sqrt(dx * dx + dy * dy);
-                    let a = Math.atan2(dy, dx) - angle;
-
-                    point.x = center.x + r * Math.cos(a);
-                    point.y = center.y + r * Math.sin(a);
-
-                }, this)
-
-            }, this)
-
-        }
-
-        if (tile instanceof Slope) {
+        } else {
 
             tile.faces.forEach(function (face) {
 
@@ -325,7 +302,7 @@ class Tiles extends Phaser.Group {
         this.add(tile);
         if (this.active) {
 
-            this.map.data.points[x][y][z] = { type: 'Tile', angle: 0, color: color};
+            this.map.data.points[x][y][z] = { type: 'Tile', angle: 0, color: color };
 
         }
     }
@@ -343,7 +320,7 @@ class Tiles extends Phaser.Group {
         this.add(cube);
         if (this.active) {
 
-            this.map.data.points[x][y][z] = { type: 'Cube', angle: 0, color: color};
+            this.map.data.points[x][y][z] = { type: 'Cube', angle: 0, color: color };
 
         }
     }
@@ -363,14 +340,14 @@ class Tiles extends Phaser.Group {
         this.add(slope);
         if (this.active) {
 
-            this.map.data.points[x][y][z] = { type: 'Slope', angle: angle, color: color};
+            this.map.data.points[x][y][z] = { type: 'Slope', angle: angle, color: color };
 
         }
     }
 
-    addPolygon(x, y, z, faces, color = 0x000000, angle = 0) {
+    addPolygon(x, y, z, block, faces, color = 0x000000, angle = 0) {
 
-        let polygon = new Polygon(x, y, z, faces, angle, color, this);
+        let polygon = new Polygon(x, y, z, block, faces, angle, color, this);
 
         this.slopeRotate(polygon, angle);
 
@@ -381,9 +358,10 @@ class Tiles extends Phaser.Group {
         }
 
         this.add(polygon);
+
         if (this.active) {
 
-            this.map.data.points[x][y][z] = { type: 'Polygon', angle: angle, color: color};
+            this.map.data.points[x][y][z] = { type: block, angle: angle, color: color };
 
         }
     }
@@ -417,17 +395,25 @@ class Iso extends Phaser.Graphics {
 
                 if (tile instanceof Grid) {
 
-                    tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z, global.active.color, global.active.angle);
+                    if (tile.tiles['add' + global.active.type]) {
+
+                        tile.tiles['add' + global.active.type](tile.iso.x, tile.iso.y, tile.iso.z, global.active.color, global.active.angle);
+
+                    } else {
+
+                        tile.tiles['addPolygon'](tile.iso.x, tile.iso.y, tile.iso.z, global.active.type, global.poly[global.active.type].faces, global.active.color, global.active.angle);
+
+                    }
 
                 } else {
 
-                    if(tile.tiles.map.data.points[tile.iso.x][tile.iso.y][tile.iso.z + 1]) {
+                    if (tile.tiles.map.data.points[tile.iso.x][tile.iso.y][tile.iso.z + 1]) {
 
                         let remove = tile;
 
                         tile.tiles.forEach(function (tile) {
 
-                            if(tile.iso.x == remove.iso.x && tile.iso.y == remove.iso.y && tile.iso.z == remove.iso.z + 1) {
+                            if (tile.iso.x == remove.iso.x && tile.iso.y == remove.iso.y && tile.iso.z == remove.iso.z + 1) {
 
                                 tile.tiles.remove(tile);
 
@@ -1116,12 +1102,12 @@ class Slope extends Iso {
 }
 class Polygon extends Iso {
 
-    constructor(x, y, z, faces, angle, color, parent) {
+    constructor(x, y, z, block, faces, angle, color, parent) {
 
         super(x, y, z, parent);
 
         this.color = color;
-        this.block = 'Slope';
+        this.block = block
         this.fangle = angle;
         this.faces = [];
         this.ofaces = [];
