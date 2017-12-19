@@ -9,6 +9,8 @@ class Slider extends Phaser.Graphics {
         this.drawRect(game.width * 3 / 4, 0, game.width / 4, game.height);
         this.endFill();
 
+        this.cover = game.add.graphics(0, 0);
+
         this.iso = {
 
             angle: 0,
@@ -242,19 +244,19 @@ class Slider extends Phaser.Graphics {
 
         game.input.mouse.mouseWheelCallback = function (e) {
 
-            if (e.deltaY < 0 && items.children[0].y > -(items.length - 1) * 32 - 202) {
+            if (e.deltaY < 0 && items.children[0].y > -((items.length - game.height / 2 / 64) * 64) - 252)  {
 
                 items.forEach(function (item) {
 
-                    item.y -= 50;
+                    item.y -= 64;
 
                 })
 
-            } else if (e.deltaY > 0 && items.children[0].y < - 252) {
+            } else if (e.deltaY > 0 && items.children[0].y < -252) {
 
                 items.forEach(function (item) {
 
-                    item.y += 50;
+                    item.y += 64;
 
                 })
 
@@ -294,6 +296,14 @@ class Slider extends Phaser.Graphics {
             item.tile.export(item);
 
         }, this)
+
+        this.cover.clear();
+        this.cover.beginFill(0x000000);
+        this.cover.lineStyle(2, 0xffffff, 1);
+        this.cover.drawRect(game.width * 3 / 4, game.height / 2, game.width / 4, game.height / 2);
+        this.cover.endFill();
+
+        game.world.bringToTop(this.cover);
 
     }
 
