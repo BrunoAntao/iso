@@ -104,22 +104,26 @@ class PolyEdit extends Phaser.Graphics {
 
                     })
 
-                    global.open = true;
+                    if (data.length > 0) {
 
-                    let panel = new Panel(128, 64);
-                    panel.add(new TextBox(panel.w, panel.h,
+                        global.open = true;
 
-                        function (elem) {
+                        let panel = new Panel(128, 64);
+                        panel.add(new TextBox(panel.w, panel.h,
 
-                            socket.emit('save poly', { faces: data, name: elem.text.value });
-                            global.open = false;
-                            game.input.keyboard.onDownCallback = global.inputs;
+                            function (elem) {
 
-                        },
+                                socket.emit('save poly', { faces: data, name: elem.text.value });
+                                global.open = false;
+                                game.input.keyboard.onDownCallback = global.inputs;
 
-                        'Enter'
+                            },
 
-                    ));
+                            'Enter'
+
+                        ));
+
+                    }
                     break;
 
             }
@@ -325,10 +329,27 @@ class Face extends Phaser.Graphics {
         this.color = color;
 
         this.inputEnabled = true;
-        this.events.onInputOver.add(function () {
+        this.events.onInputDown.add(function (face) {
+
+            if(game.input.activePointer.leftButton.isDown) {
+
+
+
+            } else {
+
+                face.destroy();
+                
+            }
 
         }, this);
-        this.events.onInputOut.add(function () {
+        this.events.onInputOver.add(function (face) {
+
+            face.color = 0xffffff;
+
+        }, this);
+        this.events.onInputOut.add(function (face) {
+
+            face.color = 0x000000;
 
         }, this);
 
