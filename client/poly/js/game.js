@@ -14,7 +14,7 @@ gameState = {
 
         global.map = new PolyEdit();
 
-        new Pallete();
+        new Pallete(0);
 
     },
 
