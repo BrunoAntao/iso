@@ -49,6 +49,47 @@ class PolyEdit extends Phaser.Graphics {
 
         ]);
 
+        this.faces.addGuide([
+
+            new Point(0, 0, 0),
+            new Point(1, 0, 0),
+            new Point(1, 1, 0),
+            new Point(0, 1, 0)
+
+        ])
+        this.faces.addGuide([
+
+            new Point(0, 0, 1),
+            new Point(1, 0, 1),
+            new Point(1, 1, 1),
+            new Point(0, 1, 1)
+
+        ])
+        this.faces.addGuide([
+
+            new Point(0, 0, 0),
+            new Point(0, 0, 1)
+
+        ])
+        this.faces.addGuide([
+
+            new Point(1, 0, 0),
+            new Point(1, 0, 1),
+
+        ])
+        this.faces.addGuide([
+
+            new Point(1, 1, 0),
+            new Point(1, 1, 1),
+
+        ])
+        this.faces.addGuide([
+
+            new Point(0, 1, 0),
+            new Point(0, 1, 1),
+
+        ])
+
         let map = this;
 
         global.inputs = function (e) {
@@ -250,13 +291,25 @@ class Faces extends Phaser.Group {
 
     addPoints(points) {
 
-        this.add(new Points(this, points));
+        let point = new Points(this, points);
+        this.add(point);
+        return point;
 
     }
 
     addFace(points, color) {
 
-        this.add(new Face(this, points, color));
+        let face = new Face(this, points, color);
+        this.add(face);
+        return face;
+
+    }
+
+    addGuide(points, color) {
+
+        let guide = new Guide(this, points, color);
+        this.add(guide);
+        return guide;
 
     }
 
@@ -331,14 +384,14 @@ class Face extends Phaser.Graphics {
         this.inputEnabled = true;
         this.events.onInputDown.add(function (face) {
 
-            if(game.input.activePointer.leftButton.isDown) {
+            if (game.input.activePointer.leftButton.isDown) {
 
 
 
             } else {
 
                 face.destroy();
-                
+
             }
 
         }, this);
@@ -382,6 +435,90 @@ class Face extends Phaser.Graphics {
 
         this.endFill();
 
+
+    }
+
+    update() {
+
+        let x = 0;
+        let y = 0;
+        let z = 0;
+        this.points.forEach(function (point) {
+
+            x += point.iso.x / this.points.length;
+            y += point.iso.y / this.points.length;
+            z += point.iso.z / this.points.length;
+
+        }, this)
+
+        this.iso.x = x;
+        this.iso.y = y;
+        this.iso.z = z;
+
+    }
+
+}
+class Guide extends Phaser.Graphics {
+
+    constructor(parent, points) {
+
+        super(game, 0, 0);
+
+        this.faces = parent;
+        this.iso = { x: 0, y: 0, z: 0 };
+
+        this.points = points;
+
+        this.inputEnabled = true;
+        this.events.onInputDown.add(function (face) {
+
+            if (game.input.activePointer.leftButton.isDown) {
+
+
+
+            } else {
+
+                face.destroy();
+
+            }
+
+        }, this);
+        this.events.onInputOver.add(function (face) {
+
+            face.color = 0xffffff;
+
+        }, this);
+        this.events.onInputOut.add(function (face) {
+
+            face.color = 0x000000;
+
+        }, this);
+
+        game.add.existing(this);
+    }
+
+    draw() {
+
+        this.clear();
+
+        this.lineStyle(1, 0xffffff, 1);
+
+        let pos = global.map.isoTo2d(this.points[0].iso);
+
+        this.moveTo(pos.x, pos.y);
+
+        this.points.forEach(function (point) {
+
+            pos = global.map.isoTo2d(point.iso);
+
+            this.lineTo(pos.x, pos.y);
+
+        }, this)
+
+
+        pos = global.map.isoTo2d(this.points[0].iso);
+
+        this.lineTo(pos.x, pos.y);
 
     }
 
