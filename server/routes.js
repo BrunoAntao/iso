@@ -12,4 +12,10 @@ module.exports = function(app, map) {
 
     });
 
+    app.get('/test', function(req, res) {
+
+        res.render('test.ejs');
+
+    });
+
 };
