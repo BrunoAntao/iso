@@ -34,7 +34,7 @@ class Pallete extends Phaser.Graphics {
 
         let pallete = this;
 
-        this.color = new Text(this, 'game', 'color', this.pos + 1, function () {
+        this.color = new Text(this, 'game', 'color', this.pos, function () {
 
             let color = pallete.hexToRgb(this.elem.value);
             pallete.red.value = color.r;
@@ -43,32 +43,45 @@ class Pallete extends Phaser.Graphics {
             this.elem.blur();
 
         });
-        this.red = new Range(this, 'game', 'red', this.pos + 2, 0, 255, 1, 0);
-        this.blue = new Range(this, 'game', 'blue', this.pos + 3, 0, 255, 1, 0);
-        this.green = new Range(this, 'game', 'green', this.pos + 4, 0, 255, 1, 0);
+        this.red = new Range(this, 'game', 'red', this.pos + 1, 0, 255, 1, 0, function () {
 
-        this.cHistory = [0x000000, 0x000000, 0x000000, 0x000000, 0x000000];
-        this.cSlots = [0x000000, 0x000000, 0x000000, 0x000000, 0x000000];
-        this.cDisplays = [];
+            pallete.saveColor(
+                pallete.rgb(
+                    pallete.red.value,
+                    pallete.green.value,
+                    pallete.blue.value));
 
-        for (let i = 0; i < 5; i++) {
+        });
+        this.blue = new Range(this, 'game', 'blue', this.pos + 2, 0, 255, 1, 0, function () {
 
-            this.cDisplays.push(new cDisplay(this, i));
-            new cSlot(this, i);
+            pallete.saveColor(
+                pallete.rgb(
+                    pallete.red.value,
+                    pallete.green.value,
+                    pallete.blue.value));
 
-        }
+        });
+        this.green = new Range(this, 'game', 'green', this.pos + 3, 0, 255, 1, 0, function () {
 
-        game.input.keyboard.addCallbacks(this, function (e) {
-
-            if (e.key == 'c') {
-
-                this.saveColor();
-
-            }
+            pallete.saveColor(
+                pallete.rgb(
+                    pallete.red.value,
+                    pallete.green.value,
+                    pallete.blue.value));
 
         });
 
-        //this.color.elem.
+        this.cHistory = [0x000000, 0x000000, 0x000000, 0x000000, 0x000000];
+        this.cSlots = [0x000000, 0x000000, 0x000000, 0x000000, 0x000000];
+        this.cDisplays = game.add.group();
+        this.cSDisplays = game.add.group();
+
+        for (let i = 0; i < 5; i++) {
+
+            this.cDisplays.add(new cDisplay(this, i));
+            this.cSDisplays.add(new cSlot(this, i));
+
+        }
 
         game.add.existing(this);
     }
@@ -83,9 +96,9 @@ class Pallete extends Phaser.Graphics {
     saveColor() {
 
         this.queue(this.color.value);
-        this.cDisplays.forEach(function (display, i) {
+        this.cDisplays.forEach(function (display) {
 
-            display.setColor(this.cHistory[i]);
+            display.setColor(this.cHistory[this.cDisplays.getIndex(display)]);
 
         }, this);
 
@@ -105,7 +118,7 @@ class Pallete extends Phaser.Graphics {
         this.beginFill(this.color.value, 1);
         this.lineStyle(1, 0xffffff, 1);
 
-        this.drawCircle(game.width * 3 / 4 + game.width / 8, game.height / 4 / 6 * (this.pos) + game.width / 10 / 2 * 1.5, game.width / 10);
+        this.drawCircle(game.width * 3 / 4 + game.width / 8, game.height / 4 / 6 * (this.pos) + game.width / 10 / 2 * 1 + game.width / 10 / 10, game.width / 10);
 
         this.endFill();
 
@@ -114,7 +127,7 @@ class Pallete extends Phaser.Graphics {
 }
 class Range extends Phaser.Graphics {
 
-    constructor(pallete, parent, id, pos, min, max, step, value) {
+    constructor(pallete, parent, id, pos, min, max, step, value, up) {
 
         super(game, 0, 0);
 
@@ -132,15 +145,7 @@ class Range extends Phaser.Graphics {
 
         let elem = this;
 
-        this.elem.addEventListener('mouseup', function() {
-
-            elem.pallete.saveColor(
-                elem.pallete.rgb(
-                    elem.pallete.red.value,
-                    elem.pallete.green.value,
-                    elem.pallete.blue.value));
-
-        })
+        this.elem.addEventListener('mouseup', up);
 
         document.getElementById(parent).appendChild(this.elem);
 
@@ -162,7 +167,7 @@ class Range extends Phaser.Graphics {
     update() {
 
         this.elem.style.width = game.width / 8 + 'px';
-        this.elem.style.top = game.height / 4 / 6 + game.width / 10 / 2 * 3.5 + game.height / 4 / 6 * this.pos + 'px';
+        this.elem.style.top = game.height / 4 / 6 + game.width / 10 / 2 * 2 + game.height / 4 / 6 * this.pos + 'px';
         this.elem.style.left = game.width * 3 / 4 + game.width / 16 + 'px';
 
     }
@@ -223,7 +228,7 @@ class Text extends Phaser.Graphics {
     update() {
 
         this.elem.style.width = game.width / 8 + 'px';
-        this.elem.style.top = game.height / 4 / 6 + game.width / 10 / 2 * 3.5 + game.height / 4 / 6 * this.pos + 'px';
+        this.elem.style.top = game.height / 4 / 6 + game.width / 10 + game.height / 4 / 6 * this.pos + 'px';
         this.elem.style.left = game.width * 3 / 4 + game.width / 16 + 'px';
 
     }
@@ -269,10 +274,10 @@ class cDisplay extends Phaser.Graphics {
         this.beginFill(this.color, 1);
         this.lineStyle(1, 0xffffff, 1);
 
-        this.drawRect(game.width * 3 / 4 + (game.width / 4 - game.width / 8) / 2 + this.id * game.width / 8 / 5,
-            game.height / 4 / 6 + game.width / 10 / 2 * 2.5 + game.height / 4 / 6 * this.pallete.pos,
-            game.width / 8 / 5,
-            game.width / 8 / 5);
+        this.drawRect(game.width * 3 / 4 + game.width / 4 / 20,
+            game.height / 2 + game.width / 10 / 10 + game.width / 10 + game.height / 4 / 8 + this.id * game.width / 8 / 6,
+            game.width / 8 / 6,
+            game.width / 8 / 6);
 
         this.endFill();
 
@@ -317,10 +322,10 @@ class cSlot extends Phaser.Graphics {
         this.beginFill(this.color, 1);
         this.lineStyle(1, 0xffffff, 1);
 
-        this.drawRect(game.width * 3 / 4 + (game.width / 4 - game.width / 8) / 2 + this.id * game.width / 8 / 5,
-            game.height / 4 / 6 + game.width / 10 / 2 * 3.1 + game.height / 4 / 6 * this.pallete.pos,
-            game.width / 8 / 5,
-            game.width / 8 / 5);
+        this.drawRect(game.width * 3 / 4 + game.width / 4 / 20 + game.width / 8 / 6,
+            game.height / 2 + game.width / 10 / 10 + game.width / 10 + game.height / 4 / 8 + this.id * game.width / 8 / 6,
+            game.width / 8 / 6,
+            game.width / 8 / 6);
 
         this.endFill();
 

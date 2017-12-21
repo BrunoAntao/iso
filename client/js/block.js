@@ -131,9 +131,9 @@ class Block extends Phaser.Graphics {
 
         if (this.draw) {
 
-            if (document.getElementById('range')) {
+            if (document.getElementById('pre')) {
 
-                this.iso.pre = document.getElementById('range').value;
+                this.iso.pre = document.getElementById('pre').value;
 
             }
 

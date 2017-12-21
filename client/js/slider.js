@@ -46,91 +46,10 @@ class Slider extends Phaser.Graphics {
             return { r: arrByte[1], g: arrByte[2], b: arrByte[3] };
         }
 
-        let div = document.getElementById('game');
+        this.pallete = new Pallete(12);
 
-        this.slider = document.createElement("INPUT");
-        this.slider.setAttribute('type', 'range');
-        this.slider.setAttribute('id', 'range');
-        this.slider.setAttribute('min', 0);
-        this.slider.setAttribute('max', 1);
-        this.slider.setAttribute('step', 0.1);
-        this.slider.setAttribute('value', 1);
-        this.slider.style.position = 'absolute';
-
-        document.getElementById("game").appendChild(this.slider);
-
-        this.zoom = document.createElement("INPUT");
-        this.zoom.setAttribute('type', 'range');
-        this.zoom.setAttribute('id', 'zoom');
-        this.zoom.setAttribute('min', 0);
-        this.zoom.setAttribute('max', 2);
-        this.zoom.setAttribute('step', 0.1);
-        this.zoom.setAttribute('value', 1);
-        this.zoom.style.position = 'absolute';
-
-        document.getElementById("game").appendChild(this.zoom);
-
-        this.red = document.createElement("INPUT");
-        this.red.setAttribute('type', 'range');
-        this.red.setAttribute('id', 'red');
-        this.red.setAttribute('min', 0);
-        this.red.setAttribute('max', 255);
-        this.red.setAttribute('step', 1);
-        this.red.setAttribute('value', 0);
-        this.red.style.position = 'absolute';
-
-        document.getElementById("game").appendChild(this.red);
-
-        this.green = document.createElement("INPUT");
-        this.green.setAttribute('type', 'range');
-        this.green.setAttribute('id', 'green');
-        this.green.setAttribute('min', 0);
-        this.green.setAttribute('max', 255);
-        this.green.setAttribute('step', 1);
-        this.green.setAttribute('value', 0);
-        this.green.style.position = 'absolute';
-
-        document.getElementById("game").appendChild(this.green);
-
-        this.blue = document.createElement("INPUT");
-        this.blue.setAttribute('type', 'range');
-        this.blue.setAttribute('id', 'blue');
-        this.blue.setAttribute('min', 0);
-        this.blue.setAttribute('max', 255);
-        this.blue.setAttribute('step', 1);
-        this.blue.setAttribute('value', 0);
-        this.blue.style.position = 'absolute';
-
-        document.getElementById("game").appendChild(this.blue);
-
-        this.color = document.createElement("INPUT");
-        this.color.setAttribute('id', 'color');
-        this.color.style.position = 'absolute';
-        let slider = this;
-        this.color.onfocus = function (e) {
-
-            game.focus = true;
-
-        }
-        this.color.onblur = function () {
-
-            game.focus = false;
-
-        }
-        this.color.addEventListener('keydown', function (e) {
-
-            if (e.key == 'Enter') {
-
-                let color = slider.hexToRgb(this.value);
-                slider.red.value = color.r;
-                slider.green.value = color.g;
-                slider.blue.value = color.b;
-
-            }
-
-        })
-
-        document.getElementById("game").appendChild(this.color);
+        this.pre = new Range(this, 'game', 'pre', 16, 0, 1, 0.1, 1);
+        this.zoom = new Range(this, 'game', 'zoom', 17, 0.1, 2.1, 0.1, 1.1);
 
         game.add.existing(this);
     }
@@ -212,34 +131,6 @@ class Slider extends Phaser.Graphics {
 
         game.world.bringToTop(this.items);
 
-        this.slider.style.width = game.width / 8 + 'px';
-        this.slider.style.top = game.height * 3 / 4 + game.height / 8 + 'px';
-        this.slider.style.left = game.width * 3 / 4 + game.width / 16 + 'px';
-
-        this.zoom.style.width = game.width / 8 + 'px';
-        this.zoom.style.top = game.height * 3 / 4 + game.height / 6 + 'px';
-        this.zoom.style.left = game.width * 3 / 4 + game.width / 16 + 'px';
-
-        this.red.style.width = game.width / 8 + 'px';
-        this.red.style.top = game.height * 3 / 4 + 'px';
-        this.red.style.left = game.width * 3 / 4 + game.width / 16 + 'px';
-        this.green.style.width = game.width / 8 + 'px';
-        this.green.style.top = game.height * 3 / 4 + game.height / 32 + 'px';
-        this.green.style.left = game.width * 3 / 4 + game.width / 16 + 'px';
-        this.blue.style.width = game.width / 8 + 'px';
-        this.blue.style.top = game.height * 3 / 4 + game.height / 16 + 'px';
-        this.blue.style.left = game.width * 3 / 4 + game.width / 16 + 'px';
-
-        this.color.style.width = game.width / 8 + 'px';
-        this.color.style.top = game.height * 3 / 4 - game.height / 16 + 'px';
-        this.color.style.left = game.width * 3 / 4 + game.width / 16 + 'px';
-
-        if (!game.focus) {
-
-            this.color.value = this.rgb(parseInt(this.red.value), parseInt(this.green.value), parseInt(this.blue.value));
-
-        }
-
         let items = this.items;
 
         game.input.mouse.mouseWheelCallback = function (e) {
@@ -291,7 +182,7 @@ class Slider extends Phaser.Graphics {
 
             }
 
-            item.tile.color = this.rgb(parseInt(this.red.value), parseInt(this.green.value), parseInt(this.blue.value));
+            item.tile.color = this.pallete.selected;
             global.active.color = item.tile.color;
             item.tile.export(item);
 
@@ -304,6 +195,9 @@ class Slider extends Phaser.Graphics {
         this.cover.endFill();
 
         game.world.bringToTop(this.cover);
+        game.world.bringToTop(this.pallete);
+        game.world.bringToTop(this.pallete.cDisplays);
+        game.world.bringToTop(this.pallete.cSDisplays);
 
     }
 

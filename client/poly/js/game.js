@@ -14,10 +14,6 @@ gameState = {
 
         global.map = new PolyEdit();
 
-        //new SideBar();
-
-        global.pallete = new Pallete(0);
-
     },
 
     update: function () {

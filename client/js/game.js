@@ -190,10 +190,10 @@ gameState = {
 
             copyColor = function () {
 
-                let color = slider.hexToRgb(global.over.color);
-                slider.red.value = color.r;
-                slider.green.value = color.g;
-                slider.blue.value = color.b;
+                let color = slider.pallete.hexToRgb(global.over.color);
+                slider.pallete.red.value = color.r;
+                slider.pallete.green.value = color.g;
+                slider.pallete.blue.value = color.b;
 
             }
 
