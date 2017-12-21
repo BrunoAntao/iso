@@ -69,6 +69,8 @@ class SelectList {
 
         let elem = this;
 
+        this.text.focus();
+
         game.input.keyboard.onDownCallback = function (e) {
 
             if (e.key === 'Escape') {

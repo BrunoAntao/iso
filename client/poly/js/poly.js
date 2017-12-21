@@ -173,17 +173,6 @@ class PolyEdit extends Phaser.Graphics {
 
         game.input.keyboard.onDownCallback = global.inputs;
 
-        this.slider = document.createElement("INPUT");
-        this.slider.setAttribute('type', 'range');
-        this.slider.setAttribute('id', 'range');
-        this.slider.setAttribute('min', 0);
-        this.slider.setAttribute('max', 1);
-        this.slider.setAttribute('step', 0.1);
-        this.slider.setAttribute('value', 1);
-        this.slider.style.position = 'absolute';
-
-        document.getElementById("game").appendChild(this.slider);
-
         game.add.existing(this);
     }
 
@@ -239,11 +228,22 @@ class PolyEdit extends Phaser.Graphics {
 
     update() {
 
-        this.slider.style.width = game.width / 8 + 'px';
-        this.slider.style.top = game.height * 3 / 4 + game.height / 8 + 'px';
-        this.slider.style.left = game.width * 3 / 4 + game.width / 16 + 'px';
+        if (game.input.activePointer.leftButton.isDown) {
 
-        this.iso.pre = this.slider.value;
+            if (game.origDragPoint) {
+
+                global.point.x -= game.origDragPoint.x - game.input.activePointer.position.x;
+                global.point.y -= game.origDragPoint.y - game.input.activePointer.position.y;
+
+            }
+
+            game.origDragPoint = game.input.activePointer.position.clone();
+
+        } else {
+
+            game.origDragPoint = null;
+
+        }
 
         if (game.input.activePointer.rightButton.isDown) {
 

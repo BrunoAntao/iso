@@ -163,6 +163,7 @@ gameState = {
                 global.open = true;
 
                 let panel = new Panel(128, 64);
+
                 panel.add(new TextBox(panel.w, panel.h,
 
                     function (elem) {
