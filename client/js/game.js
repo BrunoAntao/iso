@@ -290,23 +290,6 @@ gameState = {
 
     update: function () {
 
-        if (game.input.activePointer.leftButton.isDown) {
-
-            if (game.origDragPoint) {
-
-                global.point.x -= game.origDragPoint.x - game.input.activePointer.position.x;
-                global.point.y -= game.origDragPoint.y - game.input.activePointer.position.y;
-
-            }
-
-            game.origDragPoint = game.input.activePointer.position.clone();
-
-        } else {
-
-            game.origDragPoint = null;
-
-        }
-
     },
 
     render: function () {
