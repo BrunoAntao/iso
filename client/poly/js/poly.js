@@ -113,26 +113,6 @@ class PolyEdit extends Phaser.Graphics {
 
             switch (e.key) {
 
-                case 'f': map.selected = []; break;
-                case 'Enter': if (map.selected.length > 1) {
-                    map.faces.addFace(Object.assign([], map.selected)); map.selected = [];
-
-                    map.faces.forEach(function (face) {
-
-                        if (face instanceof Points) {
-
-                            face.points.forEach(function (point) {
-
-                                point.color = 0x000000;
-                                point.selected = false;
-
-                            })
-
-                        }
-
-                    })
-
-                } break;
                 case 's':
 
                     let data = [];
@@ -195,7 +175,7 @@ class PolyEdit extends Phaser.Graphics {
         let z = new InputField('z', 2, Number);
         new Button('New Point', 3, [x, y, z], function (button) {
 
-            let pos = {x:parseFloat(x.value), y:parseFloat(y.value), z:parseFloat(z.value)};
+            let pos = { x: parseFloat(x.value), y: parseFloat(y.value), z: parseFloat(z.value) };
 
             pos.x = pos.x < 1 ? pos.x : 1 % pos.x;
             pos.y = pos.y < 1 ? pos.y : 1 % pos.y;
@@ -209,6 +189,29 @@ class PolyEdit extends Phaser.Graphics {
             })
 
         });
+        new Button('New Face', 5, [], function (button) {
+
+            if (map.selected.length > 1) {
+                map.faces.addFace(Object.assign([], map.selected)); map.selected = [];
+
+                map.faces.forEach(function (face) {
+
+                    if (face instanceof Points) {
+
+                        face.points.forEach(function (point) {
+
+                            point.color = 0x000000;
+                            point.selected = false;
+
+                        })
+
+                    }
+
+                })
+
+            }
+
+        })
 
         game.add.existing(this);
     }
