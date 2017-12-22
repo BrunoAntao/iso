@@ -45,14 +45,37 @@ class PolyEdit extends Phaser.Graphics {
             new Point(0, 0.5, 0.5),
             new Point(1, 0.5, 0.5),
 
-            new Point(0.5, 0.5, 0.5),
+            new Point(0.5, 0.5, 0.5)
 
         ]);
 
         this.faces.addGuide([
 
             new Point(0, 0, 0),
+            new Point(0, 0, 1)
+
+        ], 0x0000ff)
+        this.faces.addGuide([
+
+            new Point(0, 0, 0),
+            new Point(0, 1, 0)
+
+        ], 0x00ff00)
+        this.faces.addGuide([
+
+            new Point(0, 0, 0),
+            new Point(1, 0, 0)
+
+        ], 0xff0000)
+
+        this.faces.addGuide([
+
             new Point(1, 0, 0),
+            new Point(1, 1, 0)
+
+        ])
+        this.faces.addGuide([
+
             new Point(1, 1, 0),
             new Point(0, 1, 0)
 
@@ -63,12 +86,6 @@ class PolyEdit extends Phaser.Graphics {
             new Point(1, 0, 1),
             new Point(1, 1, 1),
             new Point(0, 1, 1)
-
-        ])
-        this.faces.addGuide([
-
-            new Point(0, 0, 0),
-            new Point(0, 0, 1)
 
         ])
         this.faces.addGuide([
@@ -172,6 +189,26 @@ class PolyEdit extends Phaser.Graphics {
         }
 
         game.input.keyboard.onDownCallback = global.inputs;
+
+        let x = new InputField('x', 0, Number);
+        let y = new InputField('y', 1, Number);
+        let z = new InputField('z', 2, Number);
+        new Button('New Point', 3, [x, y, z], function (button) {
+
+            let pos = {x:parseFloat(x.value), y:parseFloat(y.value), z:parseFloat(z.value)};
+
+            pos.x = pos.x < 1 ? pos.x : 1 % pos.x;
+            pos.y = pos.y < 1 ? pos.y : 1 % pos.y;
+            pos.z = pos.z < 1 ? pos.z : 1 % pos.z;
+
+            map.faces.addPoints([new Point(pos.x, pos.y, pos.z)]);
+            button.fields.forEach(function (field) {
+
+                field.value = 0;
+
+            })
+
+        });
 
         game.add.existing(this);
     }
@@ -289,9 +326,29 @@ class Faces extends Phaser.Group {
         game.add.existing(this);
     }
 
+    rotate(points, angle) {
+
+        points.points.forEach(function (point) {
+
+            let dx = point.iso.x - this.map.center.x;
+            let dy = point.iso.y - this.map.center.y;
+
+            let r = Math.sqrt(dx * dx + dy * dy);
+            let a = Math.atan2(dy, dx) - angle;
+
+            point.iso.x = this.map.center.x + r * Math.cos(a);
+            point.iso.y = this.map.center.y + r * Math.sin(a);
+
+        }, this)
+
+    }
+
     addPoints(points) {
 
         let point = new Points(this, points);
+
+        this.rotate(point, this.map.iso.worldAngle);
+
         this.add(point);
         return point;
 
@@ -460,7 +517,7 @@ class Face extends Phaser.Graphics {
 }
 class Guide extends Phaser.Graphics {
 
-    constructor(parent, points) {
+    constructor(parent, points, color = 0xffffff) {
 
         super(game, 0, 0);
 
@@ -468,6 +525,7 @@ class Guide extends Phaser.Graphics {
         this.iso = { x: 0, y: 0, z: 0 };
 
         this.points = points;
+        this.color = color;
 
         this.inputEnabled = true;
         this.events.onInputDown.add(function (face) {
@@ -501,7 +559,7 @@ class Guide extends Phaser.Graphics {
 
         this.clear();
 
-        this.lineStyle(1, 0xffffff, 1);
+        this.lineStyle(1, this.color, 1);
 
         let pos = global.map.isoTo2d(this.points[0].iso);
 
@@ -544,13 +602,14 @@ class Guide extends Phaser.Graphics {
 }
 class Point extends Phaser.Graphics {
 
-    constructor(x, y, z) {
+    constructor(x, y, z, color = 0x000000) {
 
         super(game, 0, 0);
 
         this.iso = { x: x, y: y, z: z, scale: 1 };
         this.pos = { x: x, y: y, z: z };
-        this.color = 0x000000;
+        this.color = color;
+        this.rcolor = color;
         this.selected = false;
 
         this.inputEnabled = true;
@@ -566,7 +625,7 @@ class Point extends Phaser.Graphics {
 
                 global.map.selected.splice(global.map.selected.indexOf(point), 1);
                 point.selected = false;
-                point.color = 0x000000;
+                point.color = this.rcolor;
 
             }
 

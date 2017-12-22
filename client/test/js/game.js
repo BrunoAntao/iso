@@ -121,29 +121,7 @@ gameState = {
 
             })
 
-            global.inputs = function (e) {
-
-                if (!game.focus) {
-
-                    switch (e.key) {
-
-                        case 'l': if (!global.open) { load(); } break;
-
-                    }
-
-                    if (global.over) {
-
-                        switch (e.key) {
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-            game.input.keyboard.onDownCallback = global.inputs;
+            load();
 
         })
 
